@@ -17,6 +17,10 @@ static size_t	count_elms(char	*cmd);
 static int		populate_array(char	**arr, char *cmd);
 void			free_arr(char ***arr);
 
+/* Tokenizes a string, using space as the delimiter, but ignoring backspace
+ * escaped spaces, so to allow parsing filenames with spaces in them
+ */
+
 char	**cmd_split(char *cmd)
 {
 	size_t	elms;
