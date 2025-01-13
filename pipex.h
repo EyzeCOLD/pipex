@@ -12,11 +12,14 @@
 
 #ifndef PIPEX_H
 # define PIPEX_H
+# include <stdlib.h>
 
 char	*get_cmd_path_for_execve(char **cmd, char **env_path);
-char	**get_env_path(char	**envp);
+char	*get_env_line(char *line, char **envp);
 char	**cmd_split(char *cmd);
 void	free_arr(char ***arr);
 int		fork_exec(char **av, char **envp);
+int		**pipe_array(size_t n);
+void	close_and_free_pipe_arr(int ***arr, size_t size);
 
 #endif

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "pipex.h"
+#include "libft/libft.h"
 
 int main(int argc, char **argv, char **envp)
 {
@@ -8,7 +9,6 @@ int main(int argc, char **argv, char **envp)
 	{
 		char	*path;
 		char	**av;
-		char	**env_path = get_env_path(envp);
 
 		if (!env_path)
 		{

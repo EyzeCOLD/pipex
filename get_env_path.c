@@ -12,12 +12,15 @@
 
 #include "libft/libft.h"
 
-char	**get_env_path(char	**envp)
+char	*get_env_line(char *line, char **envp)
 {
+	size_t	len;
+
+	len = ft_strlen(line);
 	while (*envp)
 	{
-		if (ft_strncmp(*envp, "PATH=", 5) == 0)
-			return (ft_split(*envp, ':'));
+		if (ft_strncmp(*envp, line, len) == 0)
+			return (*envp);
 		envp++;
 	}
 	return (NULL);
