@@ -6,7 +6,7 @@
 /*   By: juaho <juaho@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/19 16:14:03 by juaho             #+#    #+#             */
-/*   Updated: 2025/01/19 20:24:28 by juaho            ###   ########.fr       */
+/*   Updated: 2025/01/19 21:48:31 by juaho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ char	***get_av_arr(int argc, char **argv, char **env_path, char *pwd)
 	i = 0;
 	while (i < cmds)
 	{
-		av_arr[i] = get_av(argv[2 + 1], env_path, pwd);
+		av_arr[i] = get_av(argv[2 + i], env_path, pwd);
 		if (!av_arr[i])
 		{
 			free_av_arr(&av_arr);

@@ -6,7 +6,7 @@
 /*   By: juaho <juaho@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/11 15:32:05 by juaho             #+#    #+#             */
-/*   Updated: 2025/01/19 20:27:40 by juaho            ###   ########.fr       */
+/*   Updated: 2025/01/19 21:04:14 by juaho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ typedef struct s_pipex
 }	t_pipex;
 
 //							pipex.c
+int	init_pipex(t_pipex *px, int argc, char **argv, char **envp);
 int	destroy_pipex(t_pipex *px);
 
 //							get_env_path.c

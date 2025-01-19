@@ -6,7 +6,7 @@
 /*   By: juaho <juaho@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/19 12:11:51 by juaho             #+#    #+#             */
-/*   Updated: 2025/01/19 20:40:51 by juaho            ###   ########.fr       */
+/*   Updated: 2025/01/19 21:16:44 by juaho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,39 +15,28 @@
 #include "../inc/pipex.h"
 #include "../libft/libft.h"
 
-static int	init_pipex(t_pipex *px, int argc, char **argv, char **envp);
+static void	pipex_bzero(t_pipex *px);
 
-int main(int argc, char **argv, char **envp)
-{
-	if (argc < 5)
-		return (0);
-
-}
-
-static void	pipex_bzero(t_pipex *px)
-{
-	px->env_path = NULL;
-	px->pwd = NULL;
-	px->infile_path = NULL;
-	px->infile_fd = -1;
-	px->outfile_path = NULL;
-	px->outfile_fd = -1;
-	px->pipe_arr = NULL;
-	px->av_arr = NULL;
-}
-
-static int	init_pipex(t_pipex *px, int argc, char **argv, char **envp)
+int	init_pipex(t_pipex *px, int argc, char **argv, char **envp)
 {
 	pipex_bzero(px);
 	px->env_path = get_env_path(envp);
 	px->pwd = get_pwd(envp);
+	if (!px->env_path || !px->pwd)
+		return (destroy_pipex(px));
 	px->infile_path = ft_strjoinm(3, px->pwd, "/", argv[1]);
-	px->infile_fd = open(px->infile_path, O_RDONLY);
 	px->outfile_path = ft_strjoinm(3, px->pwd, "/", argv[argc - 1]);
+	if (!px->infile_path || !px->outfile_path)
+		return (destroy_pipex(px));
+	px->infile_fd = open(px->infile_path, O_RDONLY);
 	px->outfile_fd = open(px->outfile_path, O_CREAT | O_WRONLY, 00755);
+	if (px->infile_fd < 0 || px->outfile_fd < 0)
+		return (destroy_pipex(px));
 	px->pipe_arr = init_pipearr((size_t) argc - 4);
 	px->av_arr = get_av_arr(argc, argv, px->env_path, px->pwd);
-	return (0);
+	if (!px->pipe_arr || !px->av_arr)
+		return (destroy_pipex(px));
+	return (1);
 }
 
 int	destroy_pipex(t_pipex *px)
@@ -67,5 +56,18 @@ int	destroy_pipex(t_pipex *px)
 	if (destroy_pipearr(&(px->pipe_arr)) < 0)
 		error = -1;
 	free_av_arr(&(px->av_arr));
+	pipex_bzero(px);
 	return (error);
+}
+
+static void	pipex_bzero(t_pipex *px)
+{
+	px->env_path = NULL;
+	px->pwd = NULL;
+	px->infile_path = NULL;
+	px->infile_fd = -1;
+	px->outfile_path = NULL;
+	px->outfile_fd = -1;
+	px->pipe_arr = NULL;
+	px->av_arr = NULL;
 }
