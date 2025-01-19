@@ -6,7 +6,7 @@
 /*   By: juaho <juaho@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/19 15:46:15 by juaho             #+#    #+#             */
-/*   Updated: 2025/01/19 16:11:28 by juaho            ###   ########.fr       */
+/*   Updated: 2025/01/19 22:28:17 by juaho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,8 @@ int	destroy_pipearr(int ***pipearr)
 			if ((*ptr)[i] > 0)
 				if (close((*ptr)[i]) < 0)
 					error = 1;
-		free(ptr);
-		ptr = NULL;
+		free(*ptr);
+		*ptr = NULL;
 		ptr++;
 	}
 	free(*pipearr);

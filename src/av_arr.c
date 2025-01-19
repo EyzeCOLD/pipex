@@ -6,7 +6,7 @@
 /*   By: juaho <juaho@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/19 16:14:03 by juaho             #+#    #+#             */
-/*   Updated: 2025/01/19 21:48:31 by juaho            ###   ########.fr       */
+/*   Updated: 2025/01/19 22:26:29 by juaho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void	free_av_arr(char ****av_array)
 	while (*ptr)
 	{
 		free_av(ptr);
-		ptr = NULL;
+		*ptr = NULL;
 		ptr++;
 	}
 	free(*av_array);

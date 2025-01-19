@@ -6,7 +6,7 @@
 /*   By: juaho <juaho@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/19 21:04:53 by juaho             #+#    #+#             */
-/*   Updated: 2025/01/19 21:37:04 by juaho            ###   ########.fr       */
+/*   Updated: 2025/01/19 22:14:42 by juaho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,5 +54,7 @@ int main(int argc, char **argv, char **envp)
 				printf(", ");
 		}
 	}
+	printf("\n");
+	
 	return (destroy_pipex(&px));
 }

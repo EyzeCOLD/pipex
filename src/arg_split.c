@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   av_split.c                                         :+:      :+:    :+:   */
+/*   arg_split.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: juaho <juaho@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/19 18:26:10 by juaho             #+#    #+#             */
-/*   Updated: 2025/01/19 19:17:40 by juaho            ###   ########.fr       */
+/*   Updated: 2025/01/19 22:25:25 by juaho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,8 @@ void	free_av(char ***av)
 	ptr = *av;
 	while (*ptr)
 	{
-		free(ptr);
-		ptr = NULL;
+		free(*ptr);
+		*ptr = NULL;
 		ptr++;
 	}
 	free(*av);
@@ -90,6 +90,7 @@ static void	populate_array(char **av, char *arg)
 				break;
 			}
 			av++;
+			arg = end;
 		}
 		else
 			arg++;
