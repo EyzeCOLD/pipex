@@ -6,7 +6,7 @@
 /*   By: juaho <juaho@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/11 15:32:05 by juaho             #+#    #+#             */
-/*   Updated: 2025/01/19 16:10:53 by juaho            ###   ########.fr       */
+/*   Updated: 2025/01/19 20:27:40 by juaho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,16 +23,26 @@ typedef struct s_pipex
 	char	*outfile_path;
 	int		outfile_fd;
 	int		**pipe_arr;
-	int		***av_arr;
+	char	***av_arr;
 }	t_pipex;
 
-//	pipex.c
+//							pipex.c
 int	destroy_pipex(t_pipex *px);
-//	get_env_path.c
+
+//							get_env_path.c
 char	**get_env_path(char **envp);
 char	*get_pwd(char **envp);
-//	pipe_array.c
+
+//							pipe_array.c
 int	**init_pipearr(size_t pipes);
 int	destroy_pipearr(int ***pipearr);
+
+//							arg_split.c
+char	**arg_split(char *arg);
+void	free_av(char ***av);
+
+//							av_arr.c
+char	***get_av_arr(int argc, char **argv, char **env_path, char *pwd);
+void	free_av_arr(char ****av_array);
 
 #endif

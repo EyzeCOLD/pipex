@@ -1,0 +1,97 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   av_split.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: juaho <juaho@student.hive.fi>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/01/19 18:26:10 by juaho             #+#    #+#             */
+/*   Updated: 2025/01/19 19:17:40 by juaho            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include <stdlib.h>
+#include "../inc/pipex.h"
+#include "../libft/libft.h"
+
+static size_t	count_elms(char *arg);
+static void		populate_array(char **av, char *arg);
+
+char	**arg_split(char *arg)
+{
+	char	**av;
+	size_t	elms;
+
+	elms = count_elms(arg);
+	av = (char **) ft_calloc(sizeof(char *), elms + 1);
+	if (!av)
+		return (NULL);
+	populate_array(av, arg);
+	return (av);
+}
+
+void	free_av(char ***av)
+{
+	char	**ptr;
+
+	ptr = *av;
+	while (*ptr)
+	{
+		free(ptr);
+		ptr = NULL;
+		ptr++;
+	}
+	free(*av);
+	*av = NULL;
+}
+
+static size_t	count_elms(char *arg)
+{
+	size_t	elms;
+
+	elms = 0;
+	while (*arg)
+	{
+		if (*arg != ' ')
+		{
+			elms++;
+			while (*arg != ' ' && *arg != '\0')
+			{
+				if (*arg == '\\' && *(arg + 1) == ' ')
+					arg++;
+				arg++;
+			}
+		}
+		else
+			arg++;
+	}
+	return (elms);
+}
+
+static void	populate_array(char **av, char *arg)
+{
+	char	*end;
+
+	while (*arg)
+	{
+		if (*arg != ' ')
+		{
+			end = arg;
+			while (*end != ' ' && *end != '\0')
+			{
+				if (*end == '\\' && *end == ' ')
+					end++;
+				end++;
+			}
+			*av = ft_substr(arg, 0, end - arg);
+			if (!*av)
+			{
+				free_av(&av);
+				break;
+			}
+			av++;
+		}
+		else
+			arg++;
+	}
+}
