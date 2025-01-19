@@ -5,9 +5,7 @@
 NAME := ./bin/pipex
 
 SRC_DIR := ./src/
-SRC := pipex.c		open_files.c	get_env.c	\
-	  cmd_split.c 	fork_exec.c		get_cmd_path.c	\
-	  pipe_array.c
+SRC := 
 SRC := $(addprefix $(SRC_DIR), $(SRC))
 
 OBJ_DIR := ./obj/
