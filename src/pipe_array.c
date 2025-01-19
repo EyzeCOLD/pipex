@@ -13,8 +13,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdio.h>
-#include "libft/libft.h"
-#include "pipex.h"
+#include "../inc/pipex.h"
 
 static void	free_pipe_arr(int ***arr, size_t size);
 static int	**alloc_pipe_arr(size_t	size);
@@ -61,13 +60,13 @@ static int	**alloc_pipe_arr(size_t	size)
 	int		**ret;
 	size_t	i;
 
-	ret = (int **) ft_calloc(sizeof(int *), size);
+	ret = (int **) malloc(sizeof(int *) * size);
 	if (!ret)
 		return (NULL);
 	i = 0;
 	while (i < size)
 	{
-		ret[i] = (int *) ft_calloc(sizeof(int), 2);
+		ret[i] = (int *) malloc(sizeof(int) * 2);
 		if (!ret[i])
 		{
 			free_pipe_arr(&ret, size);

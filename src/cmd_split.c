@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include <stdlib.h>
-#include "libft/libft.h"
+#include "../libft/libft.h"
 
 static size_t	count_elms(char	*cmd);
 static int		populate_array(char	**arr, char *cmd);

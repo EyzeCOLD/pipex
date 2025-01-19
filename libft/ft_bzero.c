@@ -1,41 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   fork_exec.c                                        :+:      :+:    :+:   */
+/*   ft_bzero.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: juaho <juaho@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/11 16:19:09 by juaho             #+#    #+#             */
-/*   Updated: 2025/01/11 17:26:31 by juaho            ###   ########.fr       */
+/*   Created: 2024/10/29 14:59:25 by juaho             #+#    #+#             */
+/*   Updated: 2024/10/29 15:09:30 by juaho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>
-#include <sys/wait.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include "libft.h"
 
-int	fork_exec(char **av, int in_fd, int out_fd, char **envp)
+void	ft_bzero(void *s, size_t n)
 {
-	pid_t	cpid;
-
-	cpid = fork();
-	if (cpid == -1)
-	{
-		perror("fork");
-		return (-1);
-	}
-	if (cpid > 0)
-		wait(NULL);
-	else
-	{
-		dup2(in_fd, 0);
-		dup2(out_fd, 1);
-		execve(*av, av, envp);
-		perror("execve");
-		return (-1);
-	}
-	close(in_fd);
-	close(out_fd);
-	return (0);
+	ft_memset(s, 0, n);
 }

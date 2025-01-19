@@ -6,11 +6,11 @@
 /*   By: juaho <juaho@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/11 11:23:39 by juaho             #+#    #+#             */
-/*   Updated: 2025/01/13 19:34:16 by juaho            ###   ########.fr       */
+/*   Updated: 2025/01/15 12:21:07 by juaho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/libft.h"
+#include "../libft/libft.h"
 
 static char	*get_env_line(char *line, char **envp)
 {
@@ -36,7 +36,7 @@ char	*get_pwd(char **envp)
 	return (ft_strdup(pwd_line + 4));
 }
 
-char	**get_path_arr(char **envp)
+char	**env_path_split(char **envp)
 {
 	char	*path_line;
 
