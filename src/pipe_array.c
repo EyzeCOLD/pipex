@@ -6,7 +6,7 @@
 /*   By: juaho <juaho@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/19 15:46:15 by juaho             #+#    #+#             */
-/*   Updated: 2025/01/19 22:28:17 by juaho            ###   ########.fr       */
+/*   Updated: 2025/01/20 09:35:15 by juaho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,8 @@ int	destroy_pipearr(int ***pipearr)
 	int	i;
 	int error;
 
+	if (!*pipearr)
+		return (0);
 	ptr = *pipearr;
 	error = 0;
 	while (*ptr)
@@ -50,7 +52,7 @@ int	destroy_pipearr(int ***pipearr)
 		while (i--)
 			if ((*ptr)[i] > 0)
 				if (close((*ptr)[i]) < 0)
-					error = 1;
+					error = -1;
 		free(*ptr);
 		*ptr = NULL;
 		ptr++;
