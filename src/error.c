@@ -11,15 +11,28 @@
 /* ************************************************************************** */
 
 #include <unistd.h>
+#include <string.h>
+#include <errno.h>
 #include "../libft/libft.h"
 
 void	err_comm_not_found(char *cmd)
 {
 	char *emsg;
 
-	emsg = ft_strjoin(cmd, ": command not found\n");
+	emsg = ft_strjoin("command not found: ", cmd);
 	if (!emsg)
 		return ;
-	ft_putstr_fd(emsg, 2);
+	ft_putendl_fd(emsg, 2);
+	free(emsg);
+}
+
+void	err_with_filename(char *filename)
+{
+	char *emsg;
+
+	emsg = ft_strjoinm(3, strerror(errno), ": ", filename);
+	if (!emsg)
+		return ;
+	ft_putendl_fd(emsg, 2);
 	free(emsg);
 }

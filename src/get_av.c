@@ -14,52 +14,9 @@
 #include "../inc/pipex.h"
 #include "../libft/libft.h"
 
-static char **get_av(char *arg, char **env_path, char *pwd);
 static char	*search_env(char *executable, char **env_path);
 
-char	***get_av_arr(int argc, char **argv, char **env_path, char *pwd)
-{
-	char	***av_arr;
-	size_t	i;
-	size_t	cmds;
-
-	cmds = argc - 3;
-	av_arr = (char ***) ft_calloc(sizeof(char **), cmds + 1);
-	if (!av_arr)
-		return (NULL);
-	i = 0;
-	while (i < cmds)
-	{
-		av_arr[i] = get_av(argv[2 + i], env_path, pwd);
-		if (!av_arr[i])
-		{
-			free_av_arr(&av_arr);
-			return (NULL);
-		}
-		i++;
-	}
-	return (av_arr);
-}
-
-void	free_av_arr(char ****av_array)
-{
-	char	***ptr;
-
-	if (!*av_array)
-		return ;
-	ptr = *av_array;
-	while (*ptr)
-	{
-		free_av(ptr);
-		*ptr = NULL;
-		ptr++;
-	}
-	free(*av_array);
-	*av_array = NULL;
-}
-		
-
-static char **get_av(char *arg, char **env_path, char *pwd)
+char **get_av(char *arg, char **env_path, char *pwd)
 {
 	char **av;
 	char *full_path;
@@ -97,6 +54,5 @@ static char	*search_env(char *executable, char **env_path)
 		free(full_path);
 		env_path++;
 	}
-	err_comm_not_found(executable);
 	return (NULL);
 }

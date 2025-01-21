@@ -20,18 +20,12 @@ typedef struct s_pipex
 {
 	char	**env_path;
 	char	*pwd;
-	char	*infile_path;
-	int		infile_fd;
-	char	*outfile_path;
-	int		outfile_fd;
-	int		**pipe_arr;
-	char	***av_arr;
+	int		p_fd[2];
 }	t_pipex;
 
 //							pipex.c
-int	init_pipex(t_pipex *px, int argc, char **argv, char **envp);
-int	destroy_pipex(t_pipex *px);
-int	check_access_to_files(t_pipex *px);
+int	init_pipex(t_pipex *px, char **envp);
+int	close_pipex(t_pipex *px);
 
 //							get_env_path.c
 char	**get_env_path(char **envp);
@@ -45,12 +39,12 @@ int	destroy_pipearr(int ***pipearr);
 char	**arg_split(char *arg);
 void	free_av(char ***av);
 
-//							av_arr.c
-char	***get_av_arr(int argc, char **argv, char **env_path, char *pwd);
+//							get_av.c
 void	free_av_arr(char ****av_array);
 
 //							error.c
 void	err_comm_not_found(char *cmd);
+void	err_with_filename(char *filename);
 
 //							exec_commands.c
 int	exec_commands(size_t cmds, t_pipex *px, char **envp);

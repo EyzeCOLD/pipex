@@ -11,69 +11,63 @@
 /* ************************************************************************** */
 
 #include <stdio.h>
+#include <unistd.h>
+#include <sys/wait.h>
 #include "../inc/pipex.h"
 
-//static void	print_pipex(t_pipex px);
+static int	exec_fork_first(char *cmd, char *infile, t_pipex *px);
+static int	exec_first_child(char *cmd, char *infile, t_pipex *px);
+static int	exec_fork_last(char *cmd, char *outfile, t_pipex *px);
 
 int main(int argc, char **argv, char **envp)
 {
-	t_pipex px;
-	int		error;
+	t_pipex	px;
 
-	error = init_pipex(&px, argc, argv, envp);
-	if (error < 0)
-	{
-		if (error == -1)
-			perror("pipex");
-		if (destroy_pipex(&px) < 0)
-			perror("pipex");
+	if (argc < 5)
 		return (1);
-	}
-	if (exec_commands(argc - 3, &px, envp) < 0)
+	int	p_fd[2];
+
+	if (init_pipex(&px, envp) < 0)
 	{
 		perror("pipex");
-		if (destroy_pipex(&px) < 0)
-			perror("pipex");
-		return (1);
+		close_pipex(&px);
 	}
-	return (destroy_pipex(&px));
+	if (exec_fork_first(argv[2], argv[1], &px) < 0)
+		close_pipex(&px);
+	exec_fork_last(argv[3], argv[4], &px);
+	close_pipex(&px);
 }
 
-//static void	print_pipex(t_pipex px)
-//{
-//	printf("px.env_path:\n");
-//	for (int i = 0; px.env_path[i]; i++)
-//		printf("\t%s\n", px.env_path[i]);
-//
-//	printf("\npx.pwd:\n");
-//	printf("\t%s\n", px.pwd);
-//
-//	printf("\npx.infile_path:\n");
-//	printf("\t%s\n", px.infile_path);
-//
-//	printf("\npx.infile_fd:\n");
-//	printf("\t%d\n", px.infile_fd);
-//
-//	printf("\npx.outfile_path:\n");
-//	printf("\t%s\n", px.outfile_path);
-//
-//	printf("\npx.outfile_fd:\n");
-//	printf("\t%d\n", px.outfile_fd);
-//
-//	printf("\npx.pipe_arr:\n");
-//	for (int i = 0; px.pipe_arr[i]; i++)
-//		printf("\tPipe [%d]: R[%d] W[%d]\n", i, px.pipe_arr[i][0], px.pipe_arr[i][1]);
-//
-//	printf("\npx.av_arr:\n");
-//	for (int i = 0; px.av_arr[i]; i++)
-//	{
-//		printf("\tav [%d]: ", i);
-//		for (int j = 0; px.av_arr[i][j]; j++)
-//		{
-//			printf("%s", px.av_arr[i][j]);
-//			if (px.av_arr[i][j + 1])
-//				printf(", ");
-//		}
-//		printf("\n");
-//	}
-//}
+static int	exec_fork_first(char *cmd, char *infile, t_pipex *px)
+{
+	int	cpid;
+
+	cpid = fork();
+	if (cpid < 0)
+		return (-1);
+	if (cpid == 0)
+		exec_first_child(cmd, infile, px);
+	wait(NULL);
+	return (0);
+}
+
+static int	exec_first_child(char *cmd, char *infile, t_pipex *px)
+{
+	char	*infile_path;
+	char	**av;
+	int		infile_fd;
+
+	infile_path = ft_strjoinm(3, px->pwd, "/", infile);
+	if (!infile_path)
+		return (-1);
+	infile_fd = open(infile_path, O_RDONLY);
+	if (infile_fd < 0)
+	{
+		err_with_filename(infile);
+		return (-2);
+	}
+	av = get_av(cmd, px->env_path, px->pwd);
+	if (!av)
+	{
+		
+static int	exec_fork_last(char *cmd, char *outfile, t_pipex *px);
