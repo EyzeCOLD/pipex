@@ -31,6 +31,7 @@ typedef struct s_pipex
 //							pipex.c
 int	init_pipex(t_pipex *px, int argc, char **argv, char **envp);
 int	destroy_pipex(t_pipex *px);
+int	check_access_to_files(t_pipex *px);
 
 //							get_env_path.c
 char	**get_env_path(char **envp);

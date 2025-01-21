@@ -12,13 +12,18 @@
 
 #include <fcntl.h>
 #include <unistd.h>
+#include <stdio.h>
 #include "../inc/pipex.h"
 #include "../libft/libft.h"
 
 static void	pipex_bzero(t_pipex *px);
+static int	open_files(t_pipex *px);
 
 int	init_pipex(t_pipex *px, int argc, char **argv, char **envp)
 {
+	int	error;
+
+	error = 0;
 	pipex_bzero(px);
 	px->env_path = get_env_path(envp);
 	px->pwd = get_pwd(envp);
@@ -28,19 +33,12 @@ int	init_pipex(t_pipex *px, int argc, char **argv, char **envp)
 	px->outfile_path = ft_strjoinm(3, px->pwd, "/", argv[argc - 1]);
 	if (!px->infile_path || !px->outfile_path)
 		return (-1);
-	px->infile_fd = open(px->infile_path, O_RDONLY);
-	if (access(px->outfile_path, W_OK) == 0)
-		if (unlink(px->outfile_path) < 0)
-			return (-1);
-	px->outfile_fd = open(px->outfile_path, O_CREAT | O_WRONLY, 00755);
-	if (px->infile_fd < 0 || px->outfile_fd < 0)
-		return (-1);
+	error = open_files(px);
+	if (error < 0)
+		return (error);
 	px->pipe_arr = init_pipearr((size_t) argc - 4);
 	if (!px->pipe_arr)
 		return (-1);
-	px->av_arr = get_av_arr(argc, argv, px->env_path, px->pwd);
-	if (!px->av_arr)
-		return (-2);
 	return (0);
 }
 
@@ -77,4 +75,29 @@ static void	pipex_bzero(t_pipex *px)
 	px->outfile_fd = -1;
 	px->pipe_arr = NULL;
 	px->av_arr = NULL;
+}
+
+static int	open_files(t_pipex *px)
+{
+	px->infile_fd = open(px->infile_path, O_RDONLY);
+	if (px->infile_fd < 0)
+	{
+		perror(px->infile_path);
+		return (-2);
+	}
+	if (access(px->outfile_path, F_OK) == 0)
+	{
+		if (unlink(px->outfile_path) < 0)
+		{
+			perror(px->outfile_path);
+			return (-2);
+		}
+	}
+	px->outfile_fd = open(px->outfile_path, O_CREAT | O_WRONLY, 00755);
+	if (px->outfile_fd < 0)
+	{
+		perror(px->outfile_path);
+		return (-2);
+	}
+	return (0);
 }
