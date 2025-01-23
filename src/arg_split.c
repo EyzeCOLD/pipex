@@ -87,7 +87,7 @@ static void	populate_array(char **av, char *arg)
 			if (!*av)
 			{
 				free_av(&av);
-				break;
+				break ;
 			}
 			av++;
 			arg = end;

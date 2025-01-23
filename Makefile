@@ -5,8 +5,8 @@
 NAME := ./bin/pipex
 
 SRC_DIR := ./src/
-SRC :=	arg_split.c		av_arr.c		get_env_path.c	\
-		main.c			pipe_array.c	pipex.c			\
+SRC :=	arg_split.c		get_av.c		get_env_path.c	\
+		main.c			pipex.c			open_files.c	\
 		error.c			exec_commands.c
 SRC := $(addprefix $(SRC_DIR), $(SRC))
 

@@ -22,37 +22,31 @@ typedef struct s_pipex
 	char	**env_path;
 	char	*pwd;
 	int		p_fd[2];
+	int		fd;
 }	t_pipex;
 
-//							pipex.c
-int	init_pipex(t_pipex *px, char **envp);
-int	close_pipex(t_pipex *px);
-
-//							get_env_path.c
+//////////////////////////////////////////////////////////////////// pipex.c //
+int		init_pipex(t_pipex *px, char **envp);
+int		close_pipex(t_pipex *px);
+///////////////////////////////////////////////////////////// get_env_path.c //
 char	**get_env_path(char **envp);
 char	*get_pwd(char **envp);
-
-//							pipe_array.c
-int	**init_pipearr(size_t pipes);
-int	destroy_pipearr(int ***pipearr);
-
-//							arg_split.c
+/////////////////////////////////////////////////////////////// pipe_array.c //
+int		**init_pipearr(size_t pipes);
+int		destroy_pipearr(int ***pipearr);
+//////////////////////////////////////////////////////////////// arg_split.c //
 char	**arg_split(char *arg);
 void	free_av(char ***av);
-
-//							get_av.c
+/////////////////////////////////////////////////////////////////// get_av.c //
 char	**get_av(char *arg, t_pipex *t);
-
-//							error.c
+/////////////////////////////////////////////////////////////////// error.c //
 void	err_cmd_not_found(char *cmd);
 void	err_with_filename(char *filename);
 void	error_exit(t_pipex *px);
-
-//							exec_commands.c
-int	exec_commands(size_t cmds, t_pipex *px, char **envp);
-
-//							open_files.c
-int	open_infile(char *infile, t_pipex *px);
-int	open_outfile(char *outfile, t_pipex *px);
+//////////////////////////////////////////////////////////// exec_commands.c //
+void	exec_commands(char **argv, t_pipex *px);
+/////////////////////////////////////////////////////////////// open_files.c //
+void	open_infile(char *infile, t_pipex *px);
+void	open_outfile(char *outfile, t_pipex *px);
 
 #endif

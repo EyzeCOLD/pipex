@@ -15,6 +15,9 @@
 #include <sys/wait.h>
 #include "../inc/pipex.h"
 
+static void	first_cmd(char *infile, char *arg, t_pipex *px);
+static void	last_cmd(char *outfile, char *arg, t_pipex *px);
+
 void	exec_commands(char **argv, t_pipex *px)
 {
 	pid_t	cpid;
@@ -28,22 +31,51 @@ void	exec_commands(char **argv, t_pipex *px)
 	if (cpid == 0)
 		first_cmd(argv[1], argv[2], px);
 	wait(NULL);
-	last_cmd(argv[3], argv[4]), px);
+	close(px->p_fd[WRITE]);
+	px->p_fd[WRITE] = -1;
+	last_cmd(argv[4], argv[3], px);
 }
 
-void	first_cmd(char *infile, char *arg, t_pipex *px)
+static void	first_cmd(char *infile, char *arg, t_pipex *px)
 {
 	char	**av;
-	int		infile_fd;
 
-	infile_fd = open_infile(infile, px);
+	open_infile(infile, px);
 	av = get_av(arg, px);
-	if (dup2(infile_fd, 0) < 0 || dup2(px->p_fd[WRITE], 1) < 0)
+	if (dup2(px->fd, 0) < 0 || dup2(px->p_fd[WRITE], 1) < 0)
 	{
 		perror("pipex");
 		free_av(&av);
-		close(infile_fd);
 		close_pipex(px);
 	}
-	close(infile_fd);
+	close(px->fd);
+	close(px->p_fd[WRITE]);
+	close(px->p_fd[READ]);
+	px->fd = -1;
 	execve(*av, av, px->envp);
+	perror("pipex: execve");
+	free_av(&av);
+	close_pipex(px);
+}
+
+static void	last_cmd(char *outfile, char *arg, t_pipex *px)
+{
+	char	**av;
+
+	open_outfile(outfile, px);
+	av = get_av(arg, px);
+	if (dup2(px->p_fd[READ], 0) < 0 || dup2(px->fd, 1) < 0)
+	{
+		perror("pipex");
+		free_av(&av);
+		close_pipex(px);
+	}
+	close(px->fd);
+	close(px->p_fd[WRITE]);
+	close(px->p_fd[READ]);
+	px->fd = -1;
+	execve(*av, av, px->envp);
+	perror("pipex: execve");
+	free_av(&av);
+	close_pipex(px);
+}

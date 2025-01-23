@@ -19,9 +19,9 @@
 
 void	err_cmd_not_found(char *cmd)
 {
-	char *emsg;
+	char	*emsg;
 
-	emsg = ft_strjoin("command not found: ", cmd);
+	emsg = ft_strjoin("pipex: command not found: ", cmd);
 	if (!emsg)
 		return ;
 	ft_putendl_fd(emsg, 2);
@@ -30,9 +30,9 @@ void	err_cmd_not_found(char *cmd)
 
 void	err_with_filename(char *filename)
 {
-	char *emsg;
+	char	*emsg;
 
-	emsg = ft_strjoinm(3, strerror(errno), ": ", filename);
+	emsg = ft_strjoinm(4, "pipex: ", strerror(errno), ": ", filename);
 	if (!emsg)
 		return ;
 	ft_putendl_fd(emsg, 2);

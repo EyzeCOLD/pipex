@@ -16,7 +16,7 @@
 
 int	**init_pipearr(size_t pipes)
 {
-	int	**pipearr;
+	int		**pipearr;
 	size_t	i;
 
 	pipearr = (int **) ft_calloc(sizeof(int *), pipes + 1);
@@ -40,7 +40,7 @@ int	destroy_pipearr(int ***pipearr)
 {
 	int	**ptr;
 	int	i;
-	int error;
+	int	error;
 
 	if (!*pipearr)
 		return (0);

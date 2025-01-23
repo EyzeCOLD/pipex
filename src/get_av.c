@@ -17,16 +17,16 @@
 static char	*search_env(char *cmd, t_pipex *px);
 static void	check_full_path(char *path, char ***av, t_pipex *px);
 
-char **get_av(char *arg, t_pipex *px)
+char	**get_av(char *arg, t_pipex *px)
 {
-	char **av;
-	char *full_path;
+	char	**av;
+	char	*full_path;
 
 	av = arg_split(arg);
 	if (!av)
 		return (NULL);
 	if (**av == '/')
-		return (av);
+		full_path = ft_strdup(*av);
 	if (**av == '.')
 		full_path = ft_strjoinm(3, px->pwd, "/", *av);
 	else
@@ -58,14 +58,18 @@ static char	*search_env(char *cmd, t_pipex *px)
 		free(full_path);
 		i++;
 	}
-	err_cmd_not_found(cmd);
-	free(full_path);
-	close_pipex(px);
-	return (NULL);
+	return (ft_strdup(cmd));
 }
 
 static void	check_full_path(char *path, char ***av, t_pipex *px)
 {
+	if (*path != '/')
+	{
+		err_cmd_not_found(**av);
+		free_av(av);
+		free(path);
+		close_pipex(px);
+	}
 	if (access(path, X_OK) < 0)
 	{
 		err_with_filename(**av);
