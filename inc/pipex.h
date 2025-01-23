@@ -6,7 +6,7 @@
 /*   By: juaho <juaho@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/11 15:32:05 by juaho             #+#    #+#             */
-/*   Updated: 2025/01/20 15:16:43 by juaho            ###   ########.fr       */
+/*   Updated: 2025/01/22 11:07:45 by juaho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 
 typedef struct s_pipex
 {
+	char	**envp;
 	char	**env_path;
 	char	*pwd;
 	int		p_fd[2];
@@ -40,13 +41,18 @@ char	**arg_split(char *arg);
 void	free_av(char ***av);
 
 //							get_av.c
-void	free_av_arr(char ****av_array);
+char	**get_av(char *arg, t_pipex *t);
 
 //							error.c
-void	err_comm_not_found(char *cmd);
+void	err_cmd_not_found(char *cmd);
 void	err_with_filename(char *filename);
+void	error_exit(t_pipex *px);
 
 //							exec_commands.c
 int	exec_commands(size_t cmds, t_pipex *px, char **envp);
+
+//							open_files.c
+int	open_infile(char *infile, t_pipex *px);
+int	open_outfile(char *outfile, t_pipex *px);
 
 #endif

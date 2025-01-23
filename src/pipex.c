@@ -6,7 +6,7 @@
 /*   By: juaho <juaho@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/19 12:11:51 by juaho             #+#    #+#             */
-/*   Updated: 2025/01/20 12:23:39 by juaho            ###   ########.fr       */
+/*   Updated: 2025/01/22 11:07:25 by juaho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 
 int	init_pipex(t_pipex *px, char **envp)
 {
+	px->envp = envp;
 	px->env_path = NULL;
 	px->pwd = NULL;
 	px->env_path = get_env_path(envp);
