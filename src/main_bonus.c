@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include <stdio.h>
-#include "../inc/pipex.h"
+#include "../inc/pipex_bonus.h"
 #include "../libft/libft.h"
 
 int	main(int argc, char **argv, char **envp)

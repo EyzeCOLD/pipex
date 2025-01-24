@@ -1,6 +1,4 @@
-  #############
- ##  FILES  ##
-#############
+#####  FILES  ##################################################################
 
 NAME := ./bin/pipex
 
@@ -17,9 +15,20 @@ INC := ./inc/pipex.h
 
 LIB := libft/libft.a
 
-  ################
- ##  COMPILERS ##
-################
+#  BONUS
+
+BONUS := ./bin/pipex_bonus
+
+BONUS_SRC := arg_split.c	get_av_bonus.c	get_env_path.c		\
+			 main_bonus.c	pipex_bonus.c	open_files_bonus.c	\
+			 error_bonus.c	exec_commands_bonus.c
+BONUS_SRC := $(addprefix $(SRC_DIR), $(BONUS_SRC))
+
+BONUS_OBJ := $(patsubst $(SRC_DIR)%.c, $(OBJ_DIR)%.o, $(BONUS_SRC))
+
+BONUS_INC := ./inc/pipex_bonus.h
+
+#####  COMPILERS  ##############################################################
 
 CC := cc
 
@@ -29,11 +38,15 @@ FSAN_FLAGS := -fsanitize=address
 
 VLGR_FLAGS := --leak-check=full --track-fds=yes
 
-  #############
- ##  RULES  ##
-#############
+#####  RULES  ##################################################################
 
 all: $(NAME)
+
+lol:
+	@echo $(BONUS)
+	@echo $(BONUS_SRC)
+	@echo $(BONUS_OBJ)
+	@echo $(BONUS_INC)
 
 $(NAME): $(LIB) $(OBJ_DIR) $(OBJ)
 	@mkdir -p bin
@@ -48,22 +61,32 @@ $(OBJ_DIR)%.o: $(SRC_DIR)%.c $(INC)
 $(OBJ_DIR):
 	@mkdir -p obj
 
+bonus: $(BONUS)
+	@touch .bonus
+
+$(BONUS): $(LIB) $(OBJ_DIR) $(BONUS_OBJ)
+	@mkdir -p bin
+	$(CC) $(CFLAGS) $(BONUS_OBJ) $(LIB) -o $@
+
 clean:
-	rm -rf $(OBJ)
+	rm -rf $(OBJ_DIR) .bonus
 	@(cd libft && make clean)
 
 fclean: clean
-	rm -rf $(NAME)
+	rm -rf $(NAME) $(BONUS)
 	@(cd libft && make fclean)
 
 re: fclean all
 
-  ##########
-##  DEBUG  ##
- ##########
+reb: fclean bonus
+
+#  DEBUG
 
 debug: CFLAGS := $(CFLAGS) -g
 debug: all
+
+debugb: CFLAGS := $(CFLAGS) -g
+debugb: bonus
 
 valgrind: CFLAGS := $(CFLAGS) -g
 valgrind: all
@@ -73,4 +96,4 @@ fsan: CFLAGS := $(CFLAGS) -g $(FSAN_FLAGS)
 fsan: all phony
 	$(NAME) $(ARGS)
 
-.PHONY: all clean fclean re phony valgrind fsan
+.PHONY: all clean fclean re phony valgrind fsan bonus

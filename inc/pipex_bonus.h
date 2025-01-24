@@ -6,7 +6,7 @@
 /*   By: juaho <juaho@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/11 15:32:05 by juaho             #+#    #+#             */
-/*   Updated: 2025/01/23 15:10:15 by juaho            ###   ########.fr       */
+/*   Updated: 2025/01/24 11:29:29 by juaho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,13 +21,16 @@ typedef struct s_pipex
 	char	**envp;
 	char	**env_path;
 	char	*pwd;
-	int		in_fd;
-	int		out_fd;
+	int		fd;
+	int		p_fd[2];
 }	t_pipex;
 
 //////////////////////////////////////////////////////////////////// pipex.c //
 int		init_pipex(t_pipex *px, char **envp);
+void	fd_bzero(t_pipex *px);
+int		close_all_fds(t_pipex *px);
 int		close_pipex(t_pipex *px);
+void	roll_pipe(t_pipex *px, int last);
 ///////////////////////////////////////////////////////////// get_env_path.c //
 char	**get_env_path(char **envp);
 char	*get_pwd(char **envp);

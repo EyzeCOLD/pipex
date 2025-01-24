@@ -6,7 +6,7 @@
 /*   By: juaho <juaho@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 14:47:53 by juaho             #+#    #+#             */
-/*   Updated: 2025/01/23 15:09:58 by juaho            ###   ########.fr       */
+/*   Updated: 2025/01/24 11:32:44 by juaho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,51 +16,80 @@
 #include "../inc/pipex_bonus.h"
 
 static void	first_cmd(char *infile, char *arg, t_pipex *px);
-static void	last_cmd(char *outfile, char *arg, t_pipex *px);
 static void	cmd(char *arg, t_pipex *px);
+static void	last_cmd(char *outfile, char *arg, t_pipex *px);
 
 void	exec_commands(int argc, char **argv, t_pipex *px)
 {
-	pid_t	cpid;
 	int		i;
 
-	cpid = fork();
-	if (cpid < 0)
-	{
-		perror("pipex");
-		close_pipex(px);
-	}
-	if (cpid == 0)
-		first_cmd(argv[1], argv[2], px);
+	first_cmd(argv[1], argv[2], px);
 	wait(NULL);
-	close(px->p_fd[WRITE]);
+	roll_pipe(px, 0);
 	i = 1;
 	while (i < argc - 4)
 	{
 		cmd(argv[i + 1], px);
-		close(px->p_fd[
-	px->p_fd[WRITE] = -1;
-	last_cmd(argv[4], argv[3], px);
+		wait(NULL);
+		roll_pipe(px, (i + 1 < argc - 4));
+		i++;
+	}
+	last_cmd(argv[argc - 1], argv[i + 1], px);
 }
 
 static void	first_cmd(char *infile, char *arg, t_pipex *px)
 {
 	char	**av;
+	int		cpid;
 
+	cpid = fork();
+	if (cpid < 0)
+	{
+		perror("cmd: fork");
+		close_pipex(px);
+	}
+	if (cpid)
+		return ;
 	open_infile(infile, px);
 	av = get_av(arg, px);
-	if (dup2(px->fd, 0) < 0 || dup2(px->p_fd[WRITE], 1) < 0)
+	if (dup2(px->fd, STDIN_FILENO) < 0
+		|| dup2(px->p_fd[WRITE], STDOUT_FILENO) < 0)
 	{
-		perror("pipex");
+		perror("first_cmd: dup2");
 		free_av(&av);
 		close_pipex(px);
 	}
-	close(px->fd);
-	close(px->p_fd[WRITE]);
-	close(px->p_fd[READ]);
-	px->fd = -1;
+	close_all_fds(px);
 	execve(*av, av, px->envp);
-	perror("pipex: execve");
+	perror("first_cmd: execve");
+	free_av(&av);
+	close_pipex(px);
+}
+
+static void	cmd(char *arg, t_pipex *px)
+{
+	char	**av;
+	int		cpid;
+
+	cpid = fork();
+	if (cpid < 0)
+	{
+		perror("cmd: fork");
+		close_pipex(px);
+	}
+	if (cpid)
+		return ;
+	av = get_av(arg, px);
+	if (dup2(px->fd, STDIN_FILENO) < 0
+		|| dup2(px->p_fd[WRITE], STDOUT_FILENO) < 0)
+	{
+		perror("cmd: dup2");
+		free_av(&av);
+		close_pipex(px);
+	}
+	close_all_fds(px);
+	execve(*av, av, px->envp);
+	perror("cmd: execve");
 	free_av(&av);
 	close_pipex(px);
 }
@@ -71,18 +100,16 @@ static void	last_cmd(char *outfile, char *arg, t_pipex *px)
 
 	open_outfile(outfile, px);
 	av = get_av(arg, px);
-	if (dup2(px->p_fd[READ], 0) < 0 || dup2(px->fd, 1) < 0)
+	if (dup2(px->fd, STDIN_FILENO) < 0
+		|| dup2(px->fd, STDOUT_FILENO) < 0)
 	{
-		perror("pipex");
+		perror("last_cmd: dup2");
 		free_av(&av);
 		close_pipex(px);
 	}
-	close(px->fd);
-	close(px->p_fd[WRITE]);
-	close(px->p_fd[READ]);
-	px->fd = -1;
+	close_all_fds(px);
 	execve(*av, av, px->envp);
-	perror("pipex: execve");
+	perror("last_cmd: execve");
 	free_av(&av);
 	close_pipex(px);
 }

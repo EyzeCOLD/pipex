@@ -6,7 +6,7 @@
 /*   By: juaho <juaho@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/19 12:11:51 by juaho             #+#    #+#             */
-/*   Updated: 2025/01/23 15:11:40 by juaho            ###   ########.fr       */
+/*   Updated: 2025/01/24 11:30:16 by juaho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,26 +26,59 @@ int	init_pipex(t_pipex *px, char **envp)
 	px->pwd = get_pwd(envp);
 	if (!px->pwd)
 		return (-1);
-	px->in_fd = -1;
-	px->out_fd = -1;
+	fd_bzero(px);
+	if (pipe(px->p_fd) < 0)
+		return (-1);
 	return (0);
+}
+
+void	fd_bzero(t_pipex *px)
+{
+	px->p_fd[READ] = -1;
+	px->p_fd[WRITE] = -1;
+	px->fd = -1;
+}
+
+int	close_all_fds(t_pipex *px)
+{
+	int	error;
+
+	error = 0;
+	if (px->fd != -1)
+		if (close(px->fd) < 0)
+			error = -1;
+	if (px->p_fd[READ] != -1)
+		if (close(px->p_fd[READ]) < 0)
+			error = -1;
+	if (px->p_fd[WRITE] != -1)
+		if (close(px->p_fd[WRITE]) < 0)
+			error = -1;
+	fd_bzero(px);
+	return (error);
 }
 
 int	close_pipex(t_pipex *px)
 {
-	int	error;
-
 	if (px->env_path)
 		free_av(&(px->env_path));
 	free(px->pwd);
-	error = 0;
-	if (px->in_fd != -1)
-		if (close(px->in_fd) < 0)
-			error = -1;
-	if (px->out_fd != -1)
-		if (close(px->out_fd) < 0)
-			error = -1;
-	if (error < 0)
+	if (close_all_fds(px) < 0)
+	{
+		perror("close_pipex");
 		exit(EXIT_FAILURE);
+	}
 	exit(EXIT_SUCCESS);
+}
+
+void	roll_pipe(t_pipex *px, int last)
+{
+	if (px->fd != -1)
+		close(px->fd);
+	close(px->p_fd[WRITE]);
+	px->fd = px->p_fd[READ];
+	if (!last && pipe(px->p_fd) < 0)
+	{
+		perror("roll pipe");
+		close_pipex(px);
+	}
 }

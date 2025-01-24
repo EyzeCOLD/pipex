@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include <stdlib.h>
-#include "../inc/pipex.h"
 #include "../libft/libft.h"
 
 static size_t	count_elms(char *arg);
