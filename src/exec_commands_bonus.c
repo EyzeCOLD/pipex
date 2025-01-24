@@ -25,16 +25,16 @@ void	exec_commands(int argc, char **argv, t_pipex *px)
 
 	first_cmd(argv[1], argv[2], px);
 	wait(NULL);
-	roll_pipe(px, 0);
+	roll_pipe(px, argc - 5);
 	i = 1;
 	while (i < argc - 4)
 	{
-		cmd(argv[i + 1], px);
+		cmd(argv[i + 2], px);
 		wait(NULL);
 		roll_pipe(px, (i + 1 < argc - 4));
 		i++;
 	}
-	last_cmd(argv[argc - 1], argv[i + 1], px);
+	last_cmd(argv[argc - 1], argv[i + 2], px);
 }
 
 static void	first_cmd(char *infile, char *arg, t_pipex *px)
@@ -53,7 +53,7 @@ static void	first_cmd(char *infile, char *arg, t_pipex *px)
 	open_infile(infile, px);
 	av = get_av(arg, px);
 	if (dup2(px->fd, STDIN_FILENO) < 0
-		|| dup2(px->p_fd[WRITE], STDOUT_FILENO) < 0)
+		|| dup2(px->pipe_fd[WRITE], STDOUT_FILENO) < 0)
 	{
 		perror("first_cmd: dup2");
 		free_av(&av);
@@ -80,8 +80,8 @@ static void	cmd(char *arg, t_pipex *px)
 	if (cpid)
 		return ;
 	av = get_av(arg, px);
-	if (dup2(px->fd, STDIN_FILENO) < 0
-		|| dup2(px->p_fd[WRITE], STDOUT_FILENO) < 0)
+	if (dup2(px->prev_pipe_fd, STDIN_FILENO) < 0
+		|| dup2(px->pipe_fd[WRITE], STDOUT_FILENO) < 0)
 	{
 		perror("cmd: dup2");
 		free_av(&av);
@@ -100,7 +100,7 @@ static void	last_cmd(char *outfile, char *arg, t_pipex *px)
 
 	open_outfile(outfile, px);
 	av = get_av(arg, px);
-	if (dup2(px->fd, STDIN_FILENO) < 0
+	if (dup2(px->prev_pipe_fd, STDIN_FILENO) < 0
 		|| dup2(px->fd, STDOUT_FILENO) < 0)
 	{
 		perror("last_cmd: dup2");

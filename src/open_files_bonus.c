@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include "../inc/pipex_bonus.h"
@@ -40,16 +39,7 @@ void	open_outfile(char *outfile, t_pipex *px)
 	outfile_path = ft_strjoinm(3, px->pwd, "/", outfile);
 	if (!outfile_path)
 		error_exit(px);
-	if (access(outfile_path, W_OK) == 0)
-	{
-		if (unlink(outfile_path) < 0)
-		{
-			perror("pipex");
-			free(outfile_path);
-			close_pipex(px);
-		}
-	}
-	px->fd = open(outfile_path, O_WRONLY | O_CREAT, 00755);
+	px->fd = open(outfile_path, O_WRONLY | O_CREAT | O_TRUNC, 00644);
 	if (px->fd < 0)
 	{
 		err_with_filename(outfile);

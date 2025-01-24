@@ -27,16 +27,17 @@ int	init_pipex(t_pipex *px, char **envp)
 	if (!px->pwd)
 		return (-1);
 	fd_bzero(px);
-	if (pipe(px->p_fd) < 0)
+	if (pipe(px->pipe_fd) < 0)
 		return (-1);
 	return (0);
 }
 
 void	fd_bzero(t_pipex *px)
 {
-	px->p_fd[READ] = -1;
-	px->p_fd[WRITE] = -1;
+	px->pipe_fd[READ] = -1;
+	px->pipe_fd[WRITE] = -1;
 	px->fd = -1;
+	px->prev_pipe_fd = -1;
 }
 
 int	close_all_fds(t_pipex *px)
@@ -47,11 +48,14 @@ int	close_all_fds(t_pipex *px)
 	if (px->fd != -1)
 		if (close(px->fd) < 0)
 			error = -1;
-	if (px->p_fd[READ] != -1)
-		if (close(px->p_fd[READ]) < 0)
+	if (px->pipe_fd[READ] != -1)
+		if (close(px->pipe_fd[READ]) < 0)
 			error = -1;
-	if (px->p_fd[WRITE] != -1)
-		if (close(px->p_fd[WRITE]) < 0)
+	if (px->pipe_fd[WRITE] != -1)
+		if (close(px->pipe_fd[WRITE]) < 0)
+			error = -1;
+	if (px->prev_pipe_fd != -1)
+		if (close(px->prev_pipe_fd) < 0)
 			error = -1;
 	fd_bzero(px);
 	return (error);
@@ -72,13 +76,17 @@ int	close_pipex(t_pipex *px)
 
 void	roll_pipe(t_pipex *px, int last)
 {
-	if (px->fd != -1)
-		close(px->fd);
-	close(px->p_fd[WRITE]);
-	px->fd = px->p_fd[READ];
-	if (!last && pipe(px->p_fd) < 0)
+	if (px->prev_pipe_fd != -1)
+		close(px->prev_pipe_fd);
+	close(px->pipe_fd[WRITE]);
+	px->pipe_fd[WRITE] = -1;
+	px->prev_pipe_fd = px->pipe_fd[READ];
+	if (last)
 	{
-		perror("roll pipe");
-		close_pipex(px);
+		if (pipe(px->pipe_fd) < 0)
+		{
+			perror("roll pipe");
+			close_pipex(px);
+		}
 	}
 }

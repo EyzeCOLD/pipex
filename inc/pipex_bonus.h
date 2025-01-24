@@ -22,7 +22,8 @@ typedef struct s_pipex
 	char	**env_path;
 	char	*pwd;
 	int		fd;
-	int		p_fd[2];
+	int		pipe_fd[2];
+	int		prev_pipe_fd;
 }	t_pipex;
 
 //////////////////////////////////////////////////////////////////// pipex.c //
