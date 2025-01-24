@@ -78,7 +78,7 @@ static void	populate_array(char **av, char *arg)
 			end = arg;
 			while (*end != ' ' && *end != '\0')
 			{
-				if (*end == '\\' && *end == ' ')
+				if (*end == '\\' && *(end + 1) == ' ')
 					end++;
 				end++;
 			}
