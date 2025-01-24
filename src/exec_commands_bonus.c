@@ -24,23 +24,24 @@ void	exec_commands(int argc, char **argv, t_pipex *px)
 	int		i;
 
 	first_cmd(argv[1], argv[2], px);
-	wait(NULL);
 	roll_pipe(px, argc - 5);
 	i = 1;
 	while (i < argc - 4)
 	{
 		cmd(argv[i + 2], px);
-		wait(NULL);
 		roll_pipe(px, (i + 1 < argc - 4));
 		i++;
 	}
 	last_cmd(argv[argc - 1], argv[i + 2], px);
+	i = 0;
+	while (i++ < argc - 3)
+		wait(NULL);
 }
 
 static void	first_cmd(char *infile, char *arg, t_pipex *px)
 {
 	char	**av;
-	int		cpid;
+	pid_t	cpid;
 
 	cpid = fork();
 	if (cpid < 0)
@@ -69,7 +70,7 @@ static void	first_cmd(char *infile, char *arg, t_pipex *px)
 static void	cmd(char *arg, t_pipex *px)
 {
 	char	**av;
-	int		cpid;
+	pid_t	cpid;
 
 	cpid = fork();
 	if (cpid < 0)
@@ -97,7 +98,16 @@ static void	cmd(char *arg, t_pipex *px)
 static void	last_cmd(char *outfile, char *arg, t_pipex *px)
 {
 	char	**av;
+	pid_t	cpid;
 
+	cpid = fork();
+	if (cpid < 0)
+	{
+		perror("last cmd: fork");
+		close_pipex(px);
+	}
+	if (cpid)
+		return ;
 	open_outfile(outfile, px);
 	av = get_av(arg, px);
 	if (dup2(px->prev_pipe_fd, STDIN_FILENO) < 0

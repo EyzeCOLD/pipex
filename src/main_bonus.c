@@ -30,5 +30,6 @@ int	main(int argc, char **argv, char **envp)
 		//HEREDOC MODE ENGAGE
 	}
 	exec_commands(argc, argv, &px);
+	close_pipex(&px);
 	return (0);
 }

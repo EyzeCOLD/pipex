@@ -14,6 +14,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include "../inc/pipex_bonus.h"
+#include "../libft/libft.h"
 
 int	init_pipex(t_pipex *px, char **envp)
 {
@@ -50,24 +51,28 @@ int	close_all_fds(t_pipex *px)
 			error = -1;
 	if (px->pipe_fd[READ] != -1)
 		if (close(px->pipe_fd[READ]) < 0)
-			error = -1;
+			error = -2;
 	if (px->pipe_fd[WRITE] != -1)
 		if (close(px->pipe_fd[WRITE]) < 0)
-			error = -1;
+			error = -3;
 	if (px->prev_pipe_fd != -1)
 		if (close(px->prev_pipe_fd) < 0)
-			error = -1;
+			error = -4;
 	fd_bzero(px);
 	return (error);
 }
 
 int	close_pipex(t_pipex *px)
 {
+	int	error;
+
 	if (px->env_path)
 		free_av(&(px->env_path));
 	free(px->pwd);
-	if (close_all_fds(px) < 0)
+	error = close_all_fds(px);
+	if (error < 0)
 	{
+		ft_putnbr_fd(error, 2);
 		perror("close_pipex");
 		exit(EXIT_FAILURE);
 	}
@@ -81,6 +86,7 @@ void	roll_pipe(t_pipex *px, int last)
 	close(px->pipe_fd[WRITE]);
 	px->pipe_fd[WRITE] = -1;
 	px->prev_pipe_fd = px->pipe_fd[READ];
+	px->pipe_fd[READ] = -1;
 	if (last)
 	{
 		if (pipe(px->pipe_fd) < 0)
