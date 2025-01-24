@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   pipex_bonus.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: juaho <juaho@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/11 15:32:05 by juaho             #+#    #+#             */
-/*   Updated: 2025/01/23 15:01:58 by juaho            ###   ########.fr       */
+/*   Updated: 2025/01/23 15:10:15 by juaho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@ typedef struct s_pipex
 	char	**envp;
 	char	**env_path;
 	char	*pwd;
-	int		p_fd[2];
-	int		fd;
+	int		in_fd;
+	int		out_fd;
 }	t_pipex;
 
 //////////////////////////////////////////////////////////////////// pipex.c //
@@ -41,7 +41,7 @@ void	err_cmd_not_found(char *cmd);
 void	err_with_filename(char *filename);
 void	error_exit(t_pipex *px);
 //////////////////////////////////////////////////////////// exec_commands.c //
-void	exec_commands(char **argv, t_pipex *px);
+void	exec_commands(int argc, char **argv, t_pipex *px);
 /////////////////////////////////////////////////////////////// open_files.c //
 void	open_infile(char *infile, t_pipex *px);
 void	open_outfile(char *outfile, t_pipex *px);
