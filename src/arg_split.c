@@ -22,6 +22,14 @@ char	**arg_split(char *arg)
 	size_t	elms;
 
 	elms = count_elms(arg);
+	if (elms == 0)
+	{
+		av = (char **) ft_calloc(sizeof(char *), 2);
+		if (!av)
+			return (NULL);
+		av[0] = ft_strdup(arg);
+		return (av);
+	}
 	av = (char **) ft_calloc(sizeof(char *), elms + 1);
 	if (!av)
 		return (NULL);

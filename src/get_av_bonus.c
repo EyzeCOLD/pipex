@@ -25,9 +25,9 @@ char	**get_av(char *arg, t_pipex *px)
 	av = arg_split(arg);
 	if (!av)
 		return (NULL);
-	if (**av == '/')
+	if (**av == '/' || **av == '\0')
 		full_path = ft_strdup(*av);
-	if (**av == '.')
+	else if (**av == '.')
 		full_path = ft_strjoinm(3, px->pwd, "/", *av);
 	else
 		full_path = search_env(*av, px);

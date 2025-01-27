@@ -62,7 +62,7 @@ static void	first_cmd(char *infile, char *arg, t_pipex *px)
 	}
 	close_all_fds(px);
 	execve(*av, av, px->envp);
-	perror("first_cmd: execve");
+	err_with_filename(*av);
 	free_av(&av);
 	close_pipex(px);
 }
@@ -90,7 +90,7 @@ static void	cmd(char *arg, t_pipex *px)
 	}
 	close_all_fds(px);
 	execve(*av, av, px->envp);
-	perror("cmd: execve");
+	err_with_filename(*av);
 	free_av(&av);
 	close_pipex(px);
 }
@@ -119,7 +119,7 @@ static void	last_cmd(char *outfile, char *arg, t_pipex *px)
 	}
 	close_all_fds(px);
 	execve(*av, av, px->envp);
-	perror("last_cmd: execve");
+	err_with_filename(*av);
 	free_av(&av);
 	close_pipex(px);
 }

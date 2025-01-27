@@ -21,7 +21,7 @@ void	err_cmd_not_found(char *cmd)
 {
 	char	*emsg;
 
-	emsg = ft_strjoin("pipex: command not found: ", cmd);
+	emsg = ft_strjoin("pipex: Command not found: ", cmd);
 	if (!emsg)
 		return ;
 	ft_putendl_fd(emsg, 2);
