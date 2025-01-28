@@ -11,27 +11,17 @@
 /* ************************************************************************** */
 
 #include <unistd.h>
+#include "libft.h"
 
-static void	putnbr_recursion(long int n, int fd)
+int	ft_putnbr_fd(int n, int fd)
 {
-	char	c;
+	char	*str;
+	int		ret;
 
-	c = n % 10 + '0';
-	if (n / 10)
-		putnbr_recursion(n / 10, fd);
-	write(fd, &c, 1);
-}
-
-void	ft_putnbr_fd(int n, int fd)
-{
-	long int	num;
-
-	if (n < 0)
-	{
-		write(fd, "-", 1);
-		num = (long int) n * (-1);
-	}
-	else
-		num = n;
-	putnbr_recursion(num, fd);
+	str = ft_itoa(n);
+	if (!str)
+		return (-1);
+	ret = ft_putstr_fd(str, fd);
+	free(str);
+	return (ret);
 }

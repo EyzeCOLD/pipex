@@ -6,7 +6,7 @@
 /*   By: juaho <juaho@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/19 12:11:51 by juaho             #+#    #+#             */
-/*   Updated: 2025/01/24 11:30:16 by juaho            ###   ########.fr       */
+/*   Updated: 2025/01/27 16:17:29 by juaho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,11 +88,10 @@ void	roll_pipe(t_pipex *px, int last)
 	px->prev_pipe_fd = px->pipe_fd[READ];
 	px->pipe_fd[READ] = -1;
 	if (last)
+		return ;
+	if (pipe(px->pipe_fd) < 0)
 	{
-		if (pipe(px->pipe_fd) < 0)
-		{
-			perror("roll pipe");
-			close_pipex(px);
-		}
+		perror("roll pipe");
+		close_pipex(px);
 	}
 }

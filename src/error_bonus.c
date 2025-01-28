@@ -6,7 +6,7 @@
 /*   By: juaho <juaho@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/20 09:06:11 by juaho             #+#    #+#             */
-/*   Updated: 2025/01/24 11:14:21 by juaho            ###   ########.fr       */
+/*   Updated: 2025/01/27 15:25:55 by juaho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,18 @@ void	err_cmd_not_found(char *cmd)
 {
 	char	*emsg;
 
-	emsg = ft_strjoin("pipex: Command not found: ", cmd);
+	emsg = ft_strjoinm(3, "pipex: ", cmd, ": command not found");
+	if (!emsg)
+		return ;
+	ft_putendl_fd(emsg, 2);
+	free(emsg);
+}
+
+void	err_perm_denied(char *cmd)
+{
+	char	*emsg;
+
+	emsg = ft_strjoinm(3, "pipex: ", cmd, ": Permission denied");
 	if (!emsg)
 		return ;
 	ft_putendl_fd(emsg, 2);
@@ -32,15 +43,18 @@ void	err_with_filename(char *filename)
 {
 	char	*emsg;
 
-	emsg = ft_strjoinm(4, "pipex: ", strerror(errno), ": ", filename);
+	emsg = ft_strjoinm(4, "pipex: ", filename, ": ", strerror(errno));
 	if (!emsg)
 		return ;
 	ft_putendl_fd(emsg, 2);
 	free(emsg);
 }
 
-void	error_exit(t_pipex *px)
+void	error_exit(t_pipex *px, char *filename)
 {
-	perror("pipex");
+	if (filename)
+		err_with_filename(filename);
+	else
+		perror("pipex");
 	close_pipex(px);
 }

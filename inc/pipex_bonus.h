@@ -6,7 +6,7 @@
 /*   By: juaho <juaho@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/11 15:32:05 by juaho             #+#    #+#             */
-/*   Updated: 2025/01/24 11:29:29 by juaho            ###   ########.fr       */
+/*   Updated: 2025/01/27 16:50:58 by juaho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ typedef struct s_pipex
 	int		prev_pipe_fd;
 }	t_pipex;
 
-//////////////////////////////////////////////////////////////////// pipex.c //
+////////////////////////////////////////////////////////////// pipex_bonus.c //
 int		init_pipex(t_pipex *px, char **envp);
 void	fd_bzero(t_pipex *px);
 int		close_all_fds(t_pipex *px);
@@ -35,19 +35,26 @@ void	roll_pipe(t_pipex *px, int last);
 ///////////////////////////////////////////////////////////// get_env_path.c //
 char	**get_env_path(char **envp);
 char	*get_pwd(char **envp);
+char	*get_env_line(char *line, char **envp);
 //////////////////////////////////////////////////////////////// arg_split.c //
 char	**arg_split(char *arg);
 void	free_av(char ***av);
-/////////////////////////////////////////////////////////////////// get_av.c //
+///////////////////////////////////////////////////////////// get_av_bonus.c //
 char	**get_av(char *arg, t_pipex *t);
-/////////////////////////////////////////////////////////////////// error.c //
+////////////////////////////////////////////////////////////// error_bonus.c //
 void	err_cmd_not_found(char *cmd);
+void	err_perm_denied(char *cmd);
 void	err_with_filename(char *filename);
-void	error_exit(t_pipex *px);
-//////////////////////////////////////////////////////////// exec_commands.c //
-void	exec_commands(int argc, char **argv, t_pipex *px);
-/////////////////////////////////////////////////////////////// open_files.c //
+void	error_exit(t_pipex *px, char *filename);
+////////////////////////////////////////////////////// exec_commands_bonus.c //
+void	first_cmd(char *infile, char *arg, t_pipex *px);
+void	heredoc_first_cmd(char *arg, char *lim, t_pipex *px);
+void	cmd(char *arg, t_pipex *px);
+void	last_cmd(char *outfile, char *arg, t_pipex *px);
+///////////////////////////////////////////////////////// open_files_bonus.c //
 void	open_infile(char *infile, t_pipex *px);
 void	open_outfile(char *outfile, t_pipex *px);
+//////////////////////////////////////////////////////////// heredoc_bonus.c //
+int		heredoc(char *limiter, t_pipex *px);
 
 #endif

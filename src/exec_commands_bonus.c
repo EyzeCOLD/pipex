@@ -6,49 +6,22 @@
 /*   By: juaho <juaho@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 14:47:53 by juaho             #+#    #+#             */
-/*   Updated: 2025/01/24 11:32:44 by juaho            ###   ########.fr       */
+/*   Updated: 2025/01/27 16:28:31 by juaho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
 #include <stdio.h>
-#include <sys/wait.h>
 #include "../inc/pipex_bonus.h"
 
-static void	first_cmd(char *infile, char *arg, t_pipex *px);
-static void	cmd(char *arg, t_pipex *px);
-static void	last_cmd(char *outfile, char *arg, t_pipex *px);
-
-void	exec_commands(int argc, char **argv, t_pipex *px)
-{
-	int		i;
-
-	first_cmd(argv[1], argv[2], px);
-	roll_pipe(px, argc - 5);
-	i = 1;
-	while (i < argc - 4)
-	{
-		cmd(argv[i + 2], px);
-		roll_pipe(px, (i + 1 < argc - 4));
-		i++;
-	}
-	last_cmd(argv[argc - 1], argv[i + 2], px);
-	i = 0;
-	while (i++ < argc - 3)
-		wait(NULL);
-}
-
-static void	first_cmd(char *infile, char *arg, t_pipex *px)
+void	first_cmd(char *infile, char *arg, t_pipex *px)
 {
 	char	**av;
 	pid_t	cpid;
 
 	cpid = fork();
 	if (cpid < 0)
-	{
-		perror("cmd: fork");
-		close_pipex(px);
-	}
+		error_exit(px, NULL);
 	if (cpid)
 		return ;
 	open_infile(infile, px);
@@ -67,17 +40,14 @@ static void	first_cmd(char *infile, char *arg, t_pipex *px)
 	close_pipex(px);
 }
 
-static void	cmd(char *arg, t_pipex *px)
+void	cmd(char *arg, t_pipex *px)
 {
 	char	**av;
 	pid_t	cpid;
 
 	cpid = fork();
 	if (cpid < 0)
-	{
-		perror("cmd: fork");
-		close_pipex(px);
-	}
+		error_exit(px, NULL);
 	if (cpid)
 		return ;
 	av = get_av(arg, px);
@@ -95,17 +65,14 @@ static void	cmd(char *arg, t_pipex *px)
 	close_pipex(px);
 }
 
-static void	last_cmd(char *outfile, char *arg, t_pipex *px)
+void	last_cmd(char *outfile, char *arg, t_pipex *px)
 {
 	char	**av;
 	pid_t	cpid;
 
 	cpid = fork();
 	if (cpid < 0)
-	{
-		perror("last cmd: fork");
-		close_pipex(px);
-	}
+		error_exit(px, NULL);
 	if (cpid)
 		return ;
 	open_outfile(outfile, px);

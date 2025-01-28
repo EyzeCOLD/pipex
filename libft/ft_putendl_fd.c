@@ -14,14 +14,13 @@
 
 int	ft_putendl_fd(char *s, int fd)
 {
-	int	ret;
+	char	*str;
+	int		ret;
 
-	if (!s)
+	str = ft_strjoin(s, "\n");
+	if (!str)
 		return (-1);
-	ret = ft_putstr_fd(s, fd);
-	if (ret < 0)
-		return (-1);
-	if (ft_putchar_fd('\n', fd) < 0)
-		return (-1);
-	return (ret + 1);
+	ret = ft_putstr_fd(str, fd);
+	free(str);
+	return (ret);
 }

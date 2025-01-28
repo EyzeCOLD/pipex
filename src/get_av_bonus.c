@@ -63,6 +63,13 @@ static char	*search_env(char *cmd, t_pipex *px)
 
 static void	check_full_path(char *path, char ***av, t_pipex *px)
 {
+	if (*path == '\0')
+	{
+		err_perm_denied(path);
+		free_av(av);
+		free(path);
+		close_pipex(px);
+	}
 	if (*path != '/')
 	{
 		err_cmd_not_found(**av);

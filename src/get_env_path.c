@@ -31,7 +31,7 @@ char	*get_pwd(char **envp)
 	return (ft_strdup(get_env_line("PWD=", envp)));
 }
 
-static char	*get_env_line(char *line, char **envp)
+char	*get_env_line(char *line, char **envp)
 {
 	size_t	line_len;
 
