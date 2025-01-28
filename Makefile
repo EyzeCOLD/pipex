@@ -19,9 +19,9 @@ LIB := libft/libft.a
 
 BONUS := ./bin/pipex_bonus
 
-BONUS_SRC := arg_split.c	get_av_bonus.c	get_env_path.c		\
-			 main_bonus.c	pipex_bonus.c	open_files_bonus.c	\
-			 error_bonus.c	exec_commands_bonus.c
+BONUS_SRC := arg_split.c	get_av.c	get_env_path.c		\
+			 main_bonus.c	pipex.c	open_files.c	\
+			 error.c		exec_commands.c
 BONUS_SRC := $(addprefix $(SRC_DIR), $(BONUS_SRC))
 
 BONUS_OBJ := $(patsubst $(SRC_DIR)%.c, $(OBJ_DIR)%.o, $(BONUS_SRC))

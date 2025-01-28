@@ -6,7 +6,7 @@
 /*   By: juaho <juaho@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/19 16:14:03 by juaho             #+#    #+#             */
-/*   Updated: 2025/01/22 11:20:41 by juaho            ###   ########.fr       */
+/*   Updated: 2025/01/28 11:18:21 by juaho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,9 @@ char	**get_av(char *arg, t_pipex *px)
 	av = arg_split(arg);
 	if (!av)
 		return (NULL);
-	if (**av == '/')
+	if (**av == '/' || **av == '\0')
 		full_path = ft_strdup(*av);
-	if (**av == '.')
+	else if (**av == '.')
 		full_path = ft_strjoinm(3, px->pwd, "/", *av);
 	else
 		full_path = search_env(*av, px);
@@ -63,6 +63,13 @@ static char	*search_env(char *cmd, t_pipex *px)
 
 static void	check_full_path(char *path, char ***av, t_pipex *px)
 {
+	if (*path == '\0')
+	{
+		err_perm_denied(path);
+		free_av(av);
+		free(path);
+		close_pipex(px);
+	}
 	if (*path != '/')
 	{
 		err_cmd_not_found(**av);
