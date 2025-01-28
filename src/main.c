@@ -41,6 +41,7 @@ static void	exec_commands(int argc, char **argv, t_pipex *px)
 	first_cmd(argv[1], argv[2], px);
 	roll_pipe(px, 0);
 	last_cmd(argv[argc - 1], argv[3], px);
+	close_all_fds(px);
 	wait(NULL);
 	wait(NULL);
 }

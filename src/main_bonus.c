@@ -55,6 +55,7 @@ static void	exec_commands(int argc, char **argv, t_pipex *px)
 		argn++;
 	}
 	last_cmd(argv[argc - 1], argv[argn], px);
+	close_all_fds(px);
 	argn = 3;
 	while (argn++ < argc) 
 		wait(NULL);
