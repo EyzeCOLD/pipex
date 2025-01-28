@@ -21,7 +21,7 @@ static void	mid_cmd(char *arg, t_pipex *px);
 
 int	main(int argc, char **argv, char **envp)
 {
-	t_pipex px;
+	t_pipex	px;
 
 	if (argc < 5)
 	{
@@ -57,7 +57,7 @@ static void	exec_commands(int argc, char **argv, t_pipex *px)
 	last_cmd(argv[argc - 1], argv[argn], px);
 	close_all_fds(px);
 	argn = 3;
-	while (argn++ < argc) 
+	while (argn++ < argc)
 		wait(NULL);
 }
 
