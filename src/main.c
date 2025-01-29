@@ -15,11 +15,12 @@
 #include "../inc/pipex.h"
 #include "../libft/libft.h"
 
-static void	exec_commands(int argc, char **argv, t_pipex *px);
+static int	exec_commands(int argc, char **argv, t_pipex *px);
 
 int	main(int argc, char **argv, char **envp)
 {
 	t_pipex	px;
+	int		exit_status;
 
 	if (argc != 5)
 	{
@@ -29,19 +30,28 @@ int	main(int argc, char **argv, char **envp)
 	if (init_pipex(&px, envp) < 0)
 	{
 		perror("pipex");
-		close_pipex(&px);
+		close_pipex(&px, 0);
 	}
-	exec_commands(argc, argv, &px);
-	close_pipex(&px);
-	return (0);
+	exit_status = exec_commands(argc, argv, &px);
+	close_pipex(&px, exit_status);
 }
 
-static void	exec_commands(int argc, char **argv, t_pipex *px)
+static int	exec_commands(int argc, char **argv, t_pipex *px)
 {
+	int	wstatus;
+	int	ret;
+
 	first_cmd(argv[1], argv[2], px);
 	roll_pipe(px, 0);
 	last_cmd(argv[argc - 1], argv[3], px);
 	close_all_fds(px);
-	wait(NULL);
-	wait(NULL);
+	ret = 0;
+	wait(&wstatus);
+	if (WIFEXITED(wstatus))
+		ret = WEXITSTATUS(wstatus);
+	wait(&wstatus);
+	if (WIFEXITED(wstatus))
+		if (ret == 0)
+			ret = WEXITSTATUS(wstatus);
+	return (ret);
 }

@@ -30,11 +30,10 @@ typedef struct s_pipex
 int		init_pipex(t_pipex *px, char **envp);
 void	fd_bzero(t_pipex *px);
 int		close_all_fds(t_pipex *px);
-int		close_pipex(t_pipex *px);
+int		close_pipex(t_pipex *px, int exit_status);
 void	roll_pipe(t_pipex *px, int last);
 ///////////////////////////////////////////////////////////// get_env_path.c //
 char	**get_env_path(char **envp);
-char	*get_pwd(char **envp);
 char	*get_env_line(char *line, char **envp);
 //////////////////////////////////////////////////////////////// arg_split.c //
 char	**arg_split(char *arg);
@@ -48,10 +47,9 @@ void	err_with_filename(char *filename);
 void	error_exit(t_pipex *px, char *filename);
 //////////////////////////////////////////////////////////// exec_commands.c //
 void	first_cmd(char *infile, char *arg, t_pipex *px);
-void	heredoc_first_cmd(char *arg, char *lim, t_pipex *px);
 void	last_cmd(char *outfile, char *arg, t_pipex *px);
 /////////////////////////////////////////////////////////////// open_files.c //
 void	open_infile(char *infile, t_pipex *px);
-void	open_outfile(char *outfile, t_pipex *px);
+void	open_outfile(char *outfile, t_pipex *px, int flags);
 
 #endif

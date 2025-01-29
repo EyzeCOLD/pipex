@@ -25,7 +25,7 @@ char	**get_av(char *arg, t_pipex *px)
 	av = arg_split(arg);
 	if (!av)
 		return (NULL);
-	if (**av == '/' || **av == '\0')
+	if (**av == '/' || **av == '\0' || !px->env_path)
 		full_path = ft_strdup(*av);
 	else if (**av == '.' || ft_strchr(*av, '/'))
 		full_path = ft_strjoinm(3, px->pwd, "/", *av);
@@ -68,20 +68,20 @@ static void	check_full_path(char *path, char ***av, t_pipex *px)
 		err_perm_denied(path);
 		free_av(av);
 		free(path);
-		close_pipex(px);
+		close_pipex(px, 126);
 	}
 	if (*path != '/')
 	{
 		err_cmd_not_found(**av);
 		free_av(av);
 		free(path);
-		close_pipex(px);
+		close_pipex(px, 127);
 	}
 	if (access(path, X_OK) < 0)
 	{
 		err_with_filename(**av);
 		free_av(av);
 		free(path);
-		close_pipex(px);
+		close_pipex(px, 127);
 	}
 }

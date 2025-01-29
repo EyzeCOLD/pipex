@@ -1,6 +1,6 @@
 #####  FILES  ##################################################################
 
-NAME := ./bin/pipex
+NAME := ./pipex
 
 SRC_DIR := ./src/
 SRC :=	arg_split.c		get_av.c		get_env_path.c	\
@@ -17,11 +17,11 @@ LIB := libft/libft.a
 
 #  BONUS
 
-BONUS := ./bin/pipex_bonus
+BONUS := ./pipex_bonus
 
-BONUS_SRC := arg_split.c	get_av.c	get_env_path.c		\
-			 main_bonus.c	pipex.c	open_files.c	\
-			 error.c		exec_commands.c
+BONUS_SRC := arg_split.c	get_av.c		get_env_path.c	\
+			 main_bonus.c	pipex.c			open_files.c	\
+			 error.c		exec_commands.c	heredoc_bonus.c
 BONUS_SRC := $(addprefix $(SRC_DIR), $(BONUS_SRC))
 
 BONUS_OBJ := $(patsubst $(SRC_DIR)%.c, $(OBJ_DIR)%.o, $(BONUS_SRC))
@@ -49,7 +49,6 @@ lol:
 	@echo $(BONUS_INC)
 
 $(NAME): $(LIB) $(OBJ_DIR) $(OBJ)
-	@mkdir -p bin
 	$(CC) $(CFLAGS) $(OBJ) $(LIB) -o $@
 
 $(LIB): phony
@@ -62,7 +61,6 @@ $(OBJ_DIR):
 	@mkdir -p obj
 
 bonus: $(BONUS)
-	@mkdir -p bin
 	@touch .bonus
 
 $(BONUS): $(LIB) $(OBJ_DIR) $(BONUS_OBJ)

@@ -11,8 +11,7 @@
 /* ************************************************************************** */
 
 #include "../libft/libft.h"
-
-static char	*get_env_line(char *line, char **envp);
+#include "../inc/pipex.h"
 
 char	**get_env_path(char **envp)
 {
@@ -24,11 +23,6 @@ char	**get_env_path(char **envp)
 		return (NULL);
 	ret = ft_split(env_line, ':');
 	return (ret);
-}
-
-char	*get_pwd(char **envp)
-{
-	return (ft_strdup(get_env_line("PWD=", envp)));
 }
 
 char	*get_env_line(char *line, char **envp)

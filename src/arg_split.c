@@ -15,6 +15,7 @@
 
 static size_t	count_elms(char *arg);
 static void		populate_array(char **av, char *arg);
+static char		*parse_arg(char *arg);
 
 char	**arg_split(char *arg)
 {
@@ -77,29 +78,24 @@ static size_t	count_elms(char *arg)
 
 static void	populate_array(char **av, char *arg)
 {
-	char	*end;
-
 	while (*arg)
 	{
 		if (*arg != ' ')
 		{
-			end = arg;
-			while (*end != ' ' && *end != '\0')
-			{
-				if (*end == '\\' && *(end + 1) == ' ')
-					end++;
-				end++;
-			}
-			*av = ft_substr(arg, 0, end - arg);
+			*av = parse_arg(arg);
 			if (!*av)
 			{
 				free_av(&av);
 				break ;
 			}
 			av++;
-			arg = end;
 		}
 		else
 			arg++;
 	}
+}
+
+static char	*parse_arg(char *arg)
+{
+	// BEST PARSING EVER
 }

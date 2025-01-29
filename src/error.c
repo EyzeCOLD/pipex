@@ -56,5 +56,5 @@ void	error_exit(t_pipex *px, char *filename)
 		err_with_filename(filename);
 	else
 		perror("pipex");
-	close_pipex(px);
+	close_pipex(px, 0);
 }

@@ -18,7 +18,7 @@
 static void	err_empty_arg(t_pipex *px)
 {
 	ft_putendl_fd("pipex: : No such file or directory", 2);
-	close_pipex(px);
+	close_pipex(px, 2);
 }
 
 void	open_infile(char *infile, t_pipex *px)
@@ -27,7 +27,10 @@ void	open_infile(char *infile, t_pipex *px)
 
 	if (*infile == '\0')
 		err_empty_arg(px);
-	infile_path = ft_strjoinm(3, px->pwd, "/", infile);
+	if (px->pwd)
+		infile_path = ft_strjoinm(3, px->pwd, "/", infile);
+	else
+		infile_path = ft_strdup(infile);
 	if (!infile_path)
 		error_exit(px, NULL);
 	px->fd = open(infile_path, O_RDONLY);
@@ -35,26 +38,29 @@ void	open_infile(char *infile, t_pipex *px)
 	{
 		err_with_filename(infile);
 		free(infile_path);
-		close_pipex(px);
+		close_pipex(px, 0);
 	}
 	free(infile_path);
 }
 
-void	open_outfile(char *outfile, t_pipex *px)
+void	open_outfile(char *outfile, t_pipex *px, int flags)
 {
 	char	*outfile_path;
 
 	if (*outfile == '\0')
 		err_empty_arg(px);
-	outfile_path = ft_strjoinm(3, px->pwd, "/", outfile);
+	if (px->pwd)
+		outfile_path = ft_strjoinm(3, px->pwd, "/", outfile);
+	else
+		outfile_path = ft_strdup(outfile);
 	if (!outfile_path)
 		error_exit(px, NULL);
-	px->fd = open(outfile_path, O_WRONLY | O_CREAT | O_TRUNC, 00644);
+	px->fd = open(outfile_path, flags, 00644);
 	if (px->fd < 0)
 	{
 		err_with_filename(outfile);
 		free(outfile_path);
-		close_pipex(px);
+		close_pipex(px, 0);
 	}
 	free(outfile_path);
 }

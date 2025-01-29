@@ -13,21 +13,25 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <errno.h>
 #include "../inc/pipex.h"
-#include "../libft/libft.h"
 
 int	init_pipex(t_pipex *px, char **envp)
 {
+	fd_bzero(px);
 	px->envp = envp;
 	px->env_path = NULL;
 	px->pwd = NULL;
-	px->env_path = get_env_path(envp);
-	if (!px->env_path)
-		return (-1);
-	px->pwd = get_pwd(envp);
-	if (!px->pwd)
-		return (-1);
-	fd_bzero(px);
+	if (*envp)
+	{
+		if (get_env_line("PATH=", envp))
+		{
+			px->env_path = get_env_path(envp);
+			if (!px->env_path)
+				return (-1);
+		}
+		px->pwd = get_env_line("PWD=", envp);
+	}
 	if (pipe(px->pipe_fd) < 0)
 		return (-1);
 	return (0);
@@ -62,21 +66,25 @@ int	close_all_fds(t_pipex *px)
 	return (error);
 }
 
-int	close_pipex(t_pipex *px)
+int	close_pipex(t_pipex *px, int exit_status)
 {
 	int	error;
+	int	close_err;
 
+	error = errno;
+	if (access(".tmp", F_OK) == 0)
+		unlink(".tmp");
 	if (px->env_path)
 		free_av(&(px->env_path));
-	free(px->pwd);
-	error = close_all_fds(px);
-	if (error < 0)
+	close_err = close_all_fds(px);
+	if (close_err < 0)
 	{
-		ft_putnbr_fd(error, 2);
 		perror("close_pipex");
-		exit(EXIT_FAILURE);
+		exit(error);
 	}
-	exit(EXIT_SUCCESS);
+	if (exit_status)
+		exit(exit_status);
+	exit(error);
 }
 
 void	roll_pipe(t_pipex *px, int last)
@@ -92,6 +100,6 @@ void	roll_pipe(t_pipex *px, int last)
 	if (pipe(px->pipe_fd) < 0)
 	{
 		perror("roll pipe");
-		close_pipex(px);
+		close_pipex(px, 0);
 	}
 }
