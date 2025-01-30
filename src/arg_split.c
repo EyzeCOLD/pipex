@@ -6,96 +6,67 @@
 /*   By: juaho <juaho@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/19 18:26:10 by juaho             #+#    #+#             */
-/*   Updated: 2025/01/19 22:25:25 by juaho            ###   ########.fr       */
+/*   Updated: 2025/01/30 23:00:33 by juaho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
 #include "../libft/libft.h"
+#include "../inc/pipex.h"
 
-static size_t	count_elms(char *arg);
-static void		populate_array(char **av, char *arg);
-static char		*parse_arg(char *arg);
+static char	*format_arg(char *arg);
+static char	*find_matching_quote(char *arg);
 
 char	**arg_split(char *arg)
 {
+	char	*argf;
 	char	**av;
-	size_t	elms;
 
-	elms = count_elms(arg);
-	if (elms == 0)
-	{
-		av = (char **) ft_calloc(sizeof(char *), 2);
-		if (!av)
-			return (NULL);
-		av[0] = ft_strdup(arg);
-		return (av);
-	}
-	av = (char **) ft_calloc(sizeof(char *), elms + 1);
-	if (!av)
+	if (ft_strlen(arg) == 1)
+		return (ft_split(arg, -1));
+	argf = ft_strdup(arg);
+	if (!argf)
 		return (NULL);
-	populate_array(av, arg);
+	argf = format_arg(argf);
+	av = ft_split(argf, -1);
+	free(argf);
 	return (av);
 }
 
-void	free_av(char ***av)
+static char	*format_arg(char *argf)
 {
-	char	**ptr;
+	const char	*escapeable;
+	size_t		i;
 
-	ptr = *av;
-	while (*ptr)
+	escapeable = "\\ \'";
+	i = 0;
+	while (argf[i])
 	{
-		free(*ptr);
-		*ptr = NULL;
-		ptr++;
-	}
-	free(*av);
-	*av = NULL;
-}
-
-static size_t	count_elms(char *arg)
-{
-	size_t	elms;
-
-	elms = 0;
-	while (*arg)
-	{
-		if (*arg != ' ')
+		if (argf[i] == '\\' && ft_strchr(escapeable, argf[i + 1]))
+			ft_memmove(&argf[i], &argf[i + 1], ft_strlen(&argf[i]));
+		else if (argf[i] == '\'' && find_matching_quote(&argf[i]))
 		{
-			elms++;
-			while (*arg != ' ' && *arg != '\0')
-			{
-				if (*arg == '\\' && *(arg + 1) == ' ')
-					arg++;
-				arg++;
-			}
+			argf[i] = -1;
+			i += find_matching_quote(&argf[i]) - &argf[i];
+			argf[i] = -1;
 		}
-		else
-			arg++;
+		else if (argf[i] == ' ')
+			argf[i] = -1;
+		i++;
 	}
-	return (elms);
+	return (argf);
 }
 
-static void	populate_array(char **av, char *arg)
+static char	*find_matching_quote(char *arg)
 {
-	while (*arg)
+	size_t	i;
+
+	i = 1;
+	while (arg[i])
 	{
-		if (*arg != ' ')
-		{
-			*av = parse_arg(arg);
-			if (!*av)
-			{
-				free_av(&av);
-				break ;
-			}
-			av++;
-		}
-		else
-			arg++;
+		if (arg[i] == '\'' && (i == 1 || arg[i - 1] != '\\'))
+			return (&arg[i]);
+		i++;
 	}
-}
-
-static char	*parse_arg(char *arg)
-{
-	// BEST PARSING EVER
+	return (NULL);
 }

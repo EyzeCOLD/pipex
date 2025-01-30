@@ -5,7 +5,7 @@ NAME := ./pipex
 SRC_DIR := ./src/
 SRC :=	arg_split.c		get_av.c		get_env_path.c	\
 		main.c			pipex.c			open_files.c	\
-		error.c			exec_commands.c
+		error.c			exec_commands.c	free_av.c
 SRC := $(addprefix $(SRC_DIR), $(SRC))
 
 OBJ_DIR := ./obj/
@@ -21,7 +21,8 @@ BONUS := ./pipex_bonus
 
 BONUS_SRC := arg_split.c	get_av.c		get_env_path.c	\
 			 main_bonus.c	pipex.c			open_files.c	\
-			 error.c		exec_commands.c	heredoc_bonus.c
+			 error.c		exec_commands.c	heredoc_bonus.c	\
+			 free_av.c
 BONUS_SRC := $(addprefix $(SRC_DIR), $(BONUS_SRC))
 
 BONUS_OBJ := $(patsubst $(SRC_DIR)%.c, $(OBJ_DIR)%.o, $(BONUS_SRC))
