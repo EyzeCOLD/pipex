@@ -27,7 +27,7 @@ typedef struct s_pipex
 }	t_pipex;
 
 //////////////////////////////////////////////////////////////////// pipex.c //
-int		init_pipex(t_pipex *px, char **envp);
+void	init_pipex(t_pipex *px, char **envp);
 void	fd_bzero(t_pipex *px);
 int		close_all_fds(t_pipex *px);
 int		close_pipex(t_pipex *px, int exit_status);
@@ -42,13 +42,13 @@ void	free_av(char ***av);
 /////////////////////////////////////////////////////////////////// get_av.c //
 char	**get_av(char *arg, t_pipex *t);
 //////////////////////////////////////////////////////////////////// error.c //
-void	err_cmd_not_found(char *cmd);
-void	err_perm_denied(char *cmd);
-void	err_with_filename(char *filename);
+int		err_cmd_not_found(char *cmd);
+int		err_perm_denied(char *cmd);
+int		err_with_filename(char *filename);
 void	error_exit(t_pipex *px, char *filename);
 //////////////////////////////////////////////////////////// exec_commands.c //
 void	first_cmd(char *infile, char *arg, t_pipex *px);
-void	last_cmd(char *outfile, char *arg, t_pipex *px);
+pid_t	last_cmd(char *outfile, char *arg, t_pipex *px);
 /////////////////////////////////////////////////////////////// open_files.c //
 void	open_infile(char *infile, t_pipex *px);
 void	open_outfile(char *outfile, t_pipex *px, int flags);

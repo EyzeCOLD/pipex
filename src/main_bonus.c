@@ -17,61 +17,77 @@
 #include "../inc/heredoc.h"
 #include "../libft/libft.h"
 
-static void	exec_commands(int argc, char **argv, t_pipex *px, int heredoc);
-static void	mid_cmd(char *arg, t_pipex *px);
+static int		exec_commands(int argc, char **argv, t_pipex *px, int heredoc);
+static int		wait_for_children(pid_t last_pid, size_t n);
+static void		mid_cmd(char *arg, t_pipex *px);
 
 int	main(int argc, char **argv, char **envp)
 {
 	t_pipex	px;
+	int		exit_code;
+	int		heredoc;
 
-	if (init_pipex(&px, envp) < 0)
-	{
-		perror("pipex");
-		close_pipex(&px, 0);
-	}
+	heredoc = 0;
 	if (argc < 5)
 	{
 		ft_putstr_fd("Usage: [infile] <2+ cmds> [outfile]\n", 2);
-		close_pipex(&px, 0);
+		return (1);
 	}
 	if (ft_strncmp(argv[1], "here_doc", 9) == 0)
+		heredoc = 1;
+	if (heredoc == 1 && argc < 6)
 	{
-		if (argc < 6)
-		{
-			ft_putstr_fd("Usage: here_doc [lim] <2+ cmds> [outfile]\n", 2);
-			close_pipex(&px, 0);
-		}
-		exec_commands(argc, argv, &px, 1);
+		ft_putstr_fd("Usage: here_doc [lim] <2+ cmds> [outfile]\n", 2);
+		return (1);
 	}
-	else
-		exec_commands(argc, argv, &px, 0);
-	close_pipex(&px, 0);
+	init_pipex(&px, envp);
+	exit_code = exec_commands(argc, argv, &px, heredoc);
+	close_pipex(&px, exit_code);
 }
 
-static void	exec_commands(int argc, char **argv, t_pipex *px, int heredoc)
+static int	exec_commands(int argc, char **argv, t_pipex *px, int heredoc)
 {
-	int	argn;
+	int		cmd;
+	pid_t	last_pid;
 
+	cmd = 2 + heredoc;
 	if (heredoc)
-		heredoc_first_cmd(argv[2], argv[3], px);
+		heredoc_first_cmd(argv[2], argv[cmd++], px);
 	else
-		first_cmd(argv[1], argv[2], px);
+		first_cmd(argv[1], argv[cmd++], px);
 	roll_pipe(px, 0);
-	argn = 3 + heredoc;
-	while (argn < argc - 2)
+	while (cmd < argc - 2)
 	{
-		mid_cmd(argv[argn], px);
-		roll_pipe(px, argn + 1 >= argc - 2);
-		argn++;
+		mid_cmd(argv[cmd], px);
+		roll_pipe(px, cmd + 1 >= argc - 2);
+		cmd++;
 	}
 	if (heredoc)
-		heredoc_last_cmd(argv[argc - 1], argv[argc - 2], px);
+		last_pid = heredoc_last_cmd(argv[argc - 1], argv[argc - 2], px);
 	else
-		last_cmd(argv[argc - 1], argv[argc - 2], px);
+		last_pid = last_cmd(argv[argc - 1], argv[argc - 2], px);
 	close_all_fds(px);
-	argn = 3 + heredoc;
-	while (argn++ < argc)
-		wait(NULL);
+	return (wait_for_children(last_pid, argc - 3 - heredoc));
+}
+
+static int	wait_for_children(pid_t last_pid, size_t n)
+{
+	pid_t	cpid;
+	int		wstatus;
+	int		exit_status;
+
+	exit_status = 0;
+	while (n)
+	{
+		cpid = waitpid(-1, &wstatus, 0);
+		if (cpid > 0)
+		{
+			if (cpid == last_pid && WIFEXITED(wstatus))
+				exit_status = WEXITSTATUS(wstatus);
+			n--;
+		}
+	}
+	return (exit_status);
 }
 
 static void	mid_cmd(char *arg, t_pipex *px)

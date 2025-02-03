@@ -17,37 +17,40 @@
 #include "../libft/libft.h"
 #include "../inc/pipex.h"
 
-void	err_cmd_not_found(char *cmd)
+int	err_cmd_not_found(char *cmd)
 {
 	char	*emsg;
 
 	emsg = ft_strjoinm(3, "pipex: ", cmd, ": command not found");
 	if (!emsg)
-		return ;
+		return (-1);
 	ft_putendl_fd(emsg, 2);
 	free(emsg);
+	return (127);
 }
 
-void	err_perm_denied(char *cmd)
+int	err_perm_denied(char *cmd)
 {
 	char	*emsg;
 
 	emsg = ft_strjoinm(3, "pipex: ", cmd, ": Permission denied");
 	if (!emsg)
-		return ;
+		return (-1);
 	ft_putendl_fd(emsg, 2);
 	free(emsg);
+	return (126);
 }
 
-void	err_with_filename(char *filename)
+int	err_with_filename(char *filename)
 {
 	char	*emsg;
 
 	emsg = ft_strjoinm(4, "pipex: ", filename, ": ", strerror(errno));
 	if (!emsg)
-		return ;
+		return (-1);
 	ft_putendl_fd(emsg, 2);
 	free(emsg);
+	return (errno);
 }
 
 void	error_exit(t_pipex *px, char *filename)

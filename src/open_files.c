@@ -18,7 +18,7 @@
 static void	err_empty_arg(t_pipex *px)
 {
 	ft_putendl_fd("pipex: : No such file or directory", 2);
-	close_pipex(px, 2);
+	close_pipex(px, 1);
 }
 
 void	open_infile(char *infile, t_pipex *px)
@@ -38,7 +38,7 @@ void	open_infile(char *infile, t_pipex *px)
 	{
 		err_with_filename(infile);
 		free(infile_path);
-		close_pipex(px, 0);
+		close_pipex(px, 1);
 	}
 	free(infile_path);
 }
@@ -60,7 +60,7 @@ void	open_outfile(char *outfile, t_pipex *px, int flags)
 	{
 		err_with_filename(outfile);
 		free(outfile_path);
-		close_pipex(px, 0);
+		close_pipex(px, 1);
 	}
 	free(outfile_path);
 }

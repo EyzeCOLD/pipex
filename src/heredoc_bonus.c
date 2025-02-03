@@ -46,7 +46,7 @@ void	heredoc_first_cmd(char *lim, char *arg, t_pipex *px)
 	close_pipex(px, 0);
 }
 
-void	heredoc_last_cmd(char *outfile, char *arg, t_pipex *px)
+pid_t	heredoc_last_cmd(char *outfile, char *arg, t_pipex *px)
 {
 	char	**av;
 	pid_t	cpid;
@@ -55,7 +55,7 @@ void	heredoc_last_cmd(char *outfile, char *arg, t_pipex *px)
 	if (cpid < 0)
 		error_exit(px, NULL);
 	if (cpid)
-		return ;
+		return (cpid);
 	open_outfile(outfile, px, O_WRONLY | O_CREAT | O_APPEND);
 	av = get_av(arg, px);
 	if (dup2(px->prev_pipe_fd, STDIN_FILENO) < 0
@@ -70,6 +70,7 @@ void	heredoc_last_cmd(char *outfile, char *arg, t_pipex *px)
 	err_with_filename(*av);
 	free_av(&av);
 	close_pipex(px, 0);
+	return (-1);
 }
 
 static void	open_heredoc(char *lim, t_pipex *px)

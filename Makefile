@@ -1,6 +1,6 @@
 #####  FILES  ##################################################################
 
-NAME := ./pipex
+NAME := ./bin/pipex
 
 SRC_DIR := ./src/
 SRC :=	arg_split.c		get_av.c		get_env_path.c	\
@@ -17,7 +17,7 @@ LIB := libft/libft.a
 
 #  BONUS
 
-BONUS := ./pipex_bonus
+BONUS := ./bin/pipex_bonus
 
 BONUS_SRC := arg_split.c	get_av.c		get_env_path.c	\
 			 main_bonus.c	pipex.c			open_files.c	\
@@ -50,6 +50,7 @@ lol:
 	@echo $(BONUS_INC)
 
 $(NAME): $(LIB) $(OBJ_DIR) $(OBJ)
+	@mkdir -p obj
 	$(CC) $(CFLAGS) $(OBJ) $(LIB) -o $@
 
 $(LIB): phony
@@ -65,14 +66,15 @@ bonus: $(BONUS)
 	@touch .bonus
 
 $(BONUS): $(LIB) $(OBJ_DIR) $(BONUS_OBJ)
+	@mkdir -p obj
 	$(CC) $(CFLAGS) $(BONUS_OBJ) $(LIB) -o $@
 
 clean:
-	rm -rf $(OBJ_DIR) .bonus
+	@rm -rf $(OBJ_DIR) .bonus
 	@(cd libft && make clean)
 
 fclean: clean
-	rm -rf $(NAME) $(BONUS)
+	@rm -rf $(NAME) $(BONUS)
 	@(cd libft && make fclean)
 
 re: fclean all

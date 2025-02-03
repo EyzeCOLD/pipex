@@ -63,25 +63,23 @@ static char	*search_env(char *cmd, t_pipex *px)
 
 static void	check_full_path(char *path, char ***av, t_pipex *px)
 {
+	int	exit_code;
+
 	if (*path == '\0')
+		exit_code = err_perm_denied(path);
+	else if (*path != '/')
+		exit_code = err_cmd_not_found(**av);
+	else if (access(path, F_OK | X_OK) < 0)
 	{
-		err_perm_denied(path);
-		free_av(av);
-		free(path);
-		close_pipex(px, 126);
+		exit_code = err_with_filename(**av);
+		if (exit_code == 2)
+			exit_code = 127;
+		else if (exit_code == 13)
+			exit_code = 126;
 	}
-	if (*path != '/')
-	{
-		err_cmd_not_found(**av);
-		free_av(av);
-		free(path);
-		close_pipex(px, 127);
-	}
-	if (access(path, X_OK) < 0)
-	{
-		err_with_filename(**av);
-		free_av(av);
-		free(path);
-		close_pipex(px, 127);
-	}
+	else
+		return ;
+	free_av(av);
+	free(path);
+	close_pipex(px, exit_code);
 }

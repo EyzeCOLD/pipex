@@ -16,29 +16,28 @@
 #include <errno.h>
 #include "../inc/pipex.h"
 
-int	init_pipex(t_pipex *px, char **envp)
+void	init_pipex(t_pipex *px, char **envp)
 {
 	fd_bzero(px);
 	px->envp = envp;
-	px->env_path = NULL;
-	px->pwd = NULL;
 	if (*envp)
 	{
 		if (get_env_line("PATH=", envp))
 		{
 			px->env_path = get_env_path(envp);
 			if (!px->env_path)
-				return (-1);
+				error_exit(px, "init_pipex");
 		}
 		px->pwd = get_env_line("PWD=", envp);
 	}
 	if (pipe(px->pipe_fd) < 0)
-		return (-1);
-	return (0);
+		error_exit(px, "init_pipex");
 }
 
 void	fd_bzero(t_pipex *px)
 {
+	px->env_path = NULL;
+	px->pwd = NULL;
 	px->pipe_fd[READ] = -1;
 	px->pipe_fd[WRITE] = -1;
 	px->fd = -1;
@@ -62,7 +61,10 @@ int	close_all_fds(t_pipex *px)
 	if (px->prev_pipe_fd != -1)
 		if (close(px->prev_pipe_fd) < 0)
 			error = -4;
-	fd_bzero(px);
+	px->fd = -1;
+	px->pipe_fd[READ] = -1;
+	px->pipe_fd[WRITE] = -1;
+	px->prev_pipe_fd = -1;
 	return (error);
 }
 
