@@ -35,10 +35,6 @@ CC := cc
 
 CFLAGS := -Wall -Wextra -Werror
 
-FSAN_FLAGS := -fsanitize=address
-
-VLGR_FLAGS := --leak-check=full --track-fds=yes
-
 #####  RULES  ##################################################################
 
 all: $(NAME)
@@ -50,7 +46,7 @@ lol:
 	@echo $(BONUS_INC)
 
 $(NAME): $(LIB) $(OBJ_DIR) $(OBJ)
-	@mkdir -p obj
+	@mkdir -p bin
 	$(CC) $(CFLAGS) $(OBJ) $(LIB) -o $@
 
 $(LIB): phony
@@ -66,7 +62,7 @@ bonus: $(BONUS)
 	@touch .bonus
 
 $(BONUS): $(LIB) $(OBJ_DIR) $(BONUS_OBJ)
-	@mkdir -p obj
+	@mkdir -p bin
 	$(CC) $(CFLAGS) $(BONUS_OBJ) $(LIB) -o $@
 
 clean:
@@ -75,6 +71,7 @@ clean:
 
 fclean: clean
 	@rm -rf $(NAME) $(BONUS)
+	@rm -rf bin
 	@(cd libft && make fclean)
 
 re: fclean all
@@ -88,13 +85,5 @@ debug: all
 
 debugb: CFLAGS := $(CFLAGS) -g
 debugb: bonus
-
-valgrind: CFLAGS := $(CFLAGS) -g
-valgrind: all
-	@valgrind $(VLGR_FLAGS) $(NAME) $(ARGS)
-
-fsan: CFLAGS := $(CFLAGS) -g $(FSAN_FLAGS)
-fsan: all phony
-	$(NAME) $(ARGS)
 
 .PHONY: all clean fclean re phony valgrind fsan bonus
