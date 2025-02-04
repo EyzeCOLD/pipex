@@ -6,11 +6,10 @@
 /*   By: juaho <juaho@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 11:45:15 by juaho             #+#    #+#             */
-/*   Updated: 2025/01/29 12:19:53 by juaho            ###   ########.fr       */
+/*   Updated: 2025/02/04 14:58:47 by juaho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#define _GNU_SOURCE
 #include <unistd.h>
 #include <stdio.h>
 #include <fcntl.h>
@@ -75,7 +74,7 @@ pid_t	heredoc_last_cmd(char *outfile, char *arg, t_pipex *px)
 
 static void	open_heredoc(char *lim, t_pipex *px)
 {
-	px->fd = open(".tmp", O_CREAT | O_EXCL | O_WRONLY, 00644);
+	px->fd = open(".tmp", O_WRONLY | O_CREAT | O_TRUNC , 00644);
 	if (px->fd < 0)
 	{
 		perror("heredoc tmpfile");

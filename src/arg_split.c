@@ -6,7 +6,7 @@
 /*   By: juaho <juaho@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/19 18:26:10 by juaho             #+#    #+#             */
-/*   Updated: 2025/01/30 23:00:33 by juaho            ###   ########.fr       */
+/*   Updated: 2025/02/04 15:14:26 by juaho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "../libft/libft.h"
 #include "../inc/pipex.h"
 
+static char	**short_or_empty(char *arg);
 static char	*format_arg(char *arg);
 static char	*find_matching_quote(char *arg);
 
@@ -22,14 +23,30 @@ char	**arg_split(char *arg)
 	char	*argf;
 	char	**av;
 
-	if (ft_strlen(arg) == 1)
-		return (ft_split(arg, -1));
+	if (ft_strlen(arg) < 2)
+		return (short_or_empty(arg));
 	argf = ft_strdup(arg);
 	if (!argf)
 		return (NULL);
 	argf = format_arg(argf);
 	av = ft_split(argf, -1);
 	free(argf);
+	return (av);
+}
+
+static char	**short_or_empty(char *arg)
+{
+	char **av;
+
+	av = (char **) ft_calloc(sizeof(char *), 2);
+	if (!av)
+		return (NULL);
+	av[0] = ft_strdup(arg);
+	if (!av[0])
+	{
+		free_av(&av);
+		return (NULL);
+	}
 	return (av);
 }
 

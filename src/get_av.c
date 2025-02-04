@@ -6,7 +6,7 @@
 /*   By: juaho <juaho@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/19 16:14:03 by juaho             #+#    #+#             */
-/*   Updated: 2025/01/28 11:18:21 by juaho            ###   ########.fr       */
+/*   Updated: 2025/02/04 15:03:17 by juaho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,9 +65,7 @@ static void	check_full_path(char *path, char ***av, t_pipex *px)
 {
 	int	exit_code;
 
-	if (*path == '\0')
-		exit_code = err_perm_denied(path);
-	else if (*path != '/')
+	if (*path != '/')
 		exit_code = err_cmd_not_found(**av);
 	else if (access(path, F_OK | X_OK) < 0)
 	{

@@ -6,7 +6,7 @@
 /*   By: juaho <juaho@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 14:43:41 by juaho             #+#    #+#             */
-/*   Updated: 2025/01/28 11:23:10 by juaho            ###   ########.fr       */
+/*   Updated: 2025/02/04 14:55:59 by juaho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include "../inc/pipex.h"
-#include "../inc/heredoc.h"
+#include "../inc/heredoc_bonus.h"
 #include "../libft/libft.h"
 
 static int		exec_commands(int argc, char **argv, t_pipex *px, int heredoc);
@@ -70,21 +70,21 @@ static int	exec_commands(int argc, char **argv, t_pipex *px, int heredoc)
 	return (wait_for_children(last_pid, argc - 3 - heredoc));
 }
 
-static int	wait_for_children(pid_t last_pid, size_t n)
+static int	wait_for_children(pid_t last_pid, size_t children_left)
 {
 	pid_t	cpid;
 	int		wstatus;
 	int		exit_status;
 
 	exit_status = 0;
-	while (n)
+	while (children_left)
 	{
 		cpid = waitpid(-1, &wstatus, 0);
 		if (cpid > 0)
 		{
 			if (cpid == last_pid && WIFEXITED(wstatus))
 				exit_status = WEXITSTATUS(wstatus);
-			n--;
+			children_left--;
 		}
 	}
 	return (exit_status);

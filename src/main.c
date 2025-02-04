@@ -6,7 +6,7 @@
 /*   By: juaho <juaho@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 14:43:41 by juaho             #+#    #+#             */
-/*   Updated: 2025/01/28 11:25:34 by juaho            ###   ########.fr       */
+/*   Updated: 2025/02/04 14:55:27 by juaho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include "../libft/libft.h"
 
 static int	exec_commands(int argc, char **argv, t_pipex *px);
-static int	wait_for_children(pid_t last_pid, size_t n);
+static int	wait_for_children(pid_t last_pid);
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -40,25 +40,24 @@ static int	exec_commands(int argc, char **argv, t_pipex *px)
 	roll_pipe(px, 1);
 	last_pid = last_cmd(argv[argc - 1], argv[3], px);
 	close_all_fds(px);
-	return (wait_for_children(last_pid, 2));
+	return (wait_for_children(last_pid));
 }
 
-static int	wait_for_children(pid_t last_pid, size_t n)
+static int	wait_for_children(pid_t last_pid)
 {
 	pid_t	cpid;
 	int		wstatus;
 	int		exit_status;
+	size_t	children_left;
 
 	exit_status = 0;
-	while (n)
+	children_left = 2;
+	while (children_left)
 	{
 		cpid = waitpid(-1, &wstatus, 0);
-		if (cpid > 0)
-		{
-			if (cpid == last_pid && WIFEXITED(wstatus))
-				exit_status = WEXITSTATUS(wstatus);
-			n--;
-		}
+		if (cpid == last_pid && WIFEXITED(wstatus))
+			exit_status = WEXITSTATUS(wstatus);
+		children_left--;
 	}
 	return (exit_status);
 }

@@ -27,7 +27,7 @@ BONUS_SRC := $(addprefix $(SRC_DIR), $(BONUS_SRC))
 
 BONUS_OBJ := $(patsubst $(SRC_DIR)%.c, $(OBJ_DIR)%.o, $(BONUS_SRC))
 
-BONUS_INC := ./inc/pipex_bonus.h
+BONUS_INC := ./inc/heredoc_bonus.h
 
 #####  COMPILERS  ##############################################################
 
@@ -39,20 +39,14 @@ CFLAGS := -Wall -Wextra -Werror
 
 all: $(NAME)
 
-lol:
-	@echo $(BONUS)
-	@echo $(BONUS_SRC)
-	@echo $(BONUS_OBJ)
-	@echo $(BONUS_INC)
-
-$(NAME): $(LIB) $(OBJ_DIR) $(OBJ)
+$(NAME): $(LIB) $(OBJ_DIR) $(OBJ) $(INC)
 	@mkdir -p bin
 	$(CC) $(CFLAGS) $(OBJ) $(LIB) -o $@
 
 $(LIB): phony
 	@(cd libft && make CFLAGS="$(CFLAGS)")
 
-$(OBJ_DIR)%.o: $(SRC_DIR)%.c $(INC)
+$(OBJ_DIR)%.o: $(SRC_DIR)%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(OBJ_DIR):
@@ -61,7 +55,7 @@ $(OBJ_DIR):
 bonus: $(BONUS)
 	@touch .bonus
 
-$(BONUS): $(LIB) $(OBJ_DIR) $(BONUS_OBJ)
+$(BONUS): $(LIB) $(OBJ_DIR) $(BONUS_OBJ) $(BONUS_INC)
 	@mkdir -p bin
 	$(CC) $(CFLAGS) $(BONUS_OBJ) $(LIB) -o $@
 
@@ -86,4 +80,4 @@ debug: all
 debugb: CFLAGS := $(CFLAGS) -g
 debugb: bonus
 
-.PHONY: all clean fclean re phony valgrind fsan bonus
+.PHONY: all clean fclean phony bonus re reb debug debugb
