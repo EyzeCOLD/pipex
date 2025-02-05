@@ -15,7 +15,7 @@
 # include "pipex.h"
 
 //////////////////////////////////////////////////////////// heredoc_bonus.c //
-void	heredoc_first_cmd(char *lim, char *arg, t_pipex *px);
+void	get_heredoc_input(char *lim, t_pipex *px);
 pid_t	heredoc_last_cmd(char *outfile, char *arg, t_pipex *px);
 
 #endif

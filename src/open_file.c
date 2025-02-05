@@ -1,18 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_isspace.c                                       :+:      :+:    :+:   */
+/*   open_files.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: juaho <juaho@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/05 22:32:20 by juaho             #+#    #+#             */
-/*   Updated: 2025/02/05 22:32:22 by juaho            ###   ########.fr       */
+/*   Created: 2025/01/22 09:18:15 by juaho             #+#    #+#             */
+/*   Updated: 2025/01/28 11:17:48 by juaho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-int	ft_isspace(int c)
+#include <fcntl.h>
+#include <unistd.h>
+#include "../inc/pipex.h"
+
+void	open_file(char *file, t_pipex *px, int flags)
 {
-	if (c == ' ' || (c >= 9 && c <= 13))
-		return (1);
-	return (0);
+	px->fd = open(file, flags, 00644);
+	if (px->fd < 0)
+	{
+		err_with_filename(file);
+		close_pipex(px, 0);
+	}
 }

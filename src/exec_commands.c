@@ -25,7 +25,7 @@ void	first_cmd(char *infile, char *arg, t_pipex *px)
 		error_exit(px, NULL);
 	if (cpid)
 		return ;
-	open_infile(infile, px);
+	open_file(infile, px, O_RDONLY);
 	av = get_av(arg, px);
 	if (dup2(px->fd, STDIN_FILENO) < 0
 		|| dup2(px->pipe_fd[WRITE], STDOUT_FILENO) < 0)
@@ -34,11 +34,7 @@ void	first_cmd(char *infile, char *arg, t_pipex *px)
 		free_av(&av);
 		close_pipex(px, 0);
 	}
-	close_all_fds(px);
-	execve(*av, av, px->envp);
-	err_with_filename(*av);
-	free_av(&av);
-	close_pipex(px, 0);
+	cmd_exec(av, px);
 }
 
 pid_t	last_cmd(char *outfile, char *arg, t_pipex *px)
@@ -51,7 +47,7 @@ pid_t	last_cmd(char *outfile, char *arg, t_pipex *px)
 		error_exit(px, NULL);
 	if (cpid)
 		return (cpid);
-	open_outfile(outfile, px, O_WRONLY | O_CREAT | O_TRUNC);
+	open_file(outfile, px, O_WRONLY | O_CREAT | O_TRUNC);
 	av = get_av(arg, px);
 	if (dup2(px->prev_pipe_fd, STDIN_FILENO) < 0
 		|| dup2(px->fd, STDOUT_FILENO) < 0)
@@ -60,10 +56,15 @@ pid_t	last_cmd(char *outfile, char *arg, t_pipex *px)
 		free_av(&av);
 		close_pipex(px, 0);
 	}
+	cmd_exec(av, px);
+	return (-1);
+}
+
+void	cmd_exec(char **av, t_pipex *px)
+{
 	close_all_fds(px);
 	execve(*av, av, px->envp);
 	err_with_filename(*av);
 	free_av(&av);
 	close_pipex(px, 0);
-	return (-1);
 }

@@ -20,7 +20,6 @@ typedef struct s_pipex
 {
 	char	**envp;
 	char	**env_path;
-	char	*pwd;
 	int		fd;
 	int		pipe_fd[2];
 	int		prev_pipe_fd;
@@ -49,8 +48,8 @@ void	error_exit(t_pipex *px, char *filename);
 //////////////////////////////////////////////////////////// exec_commands.c //
 void	first_cmd(char *infile, char *arg, t_pipex *px);
 pid_t	last_cmd(char *outfile, char *arg, t_pipex *px);
-/////////////////////////////////////////////////////////////// open_files.c //
-void	open_infile(char *infile, t_pipex *px);
-void	open_outfile(char *outfile, t_pipex *px, int flags);
+void	cmd_exec(char **av, t_pipex *px);
+//////////////////////////////////////////////////////////////// open_file.c //
+void	open_file(char *infile, t_pipex *px, int flags);
 
 #endif

@@ -4,7 +4,7 @@ NAME := ./bin/pipex
 
 SRC_DIR := ./src/
 SRC :=	arg_split.c		get_av.c		get_env_path.c	\
-		main.c			pipex.c			open_files.c	\
+		main.c			pipex.c			open_file.c	\
 		error.c			exec_commands.c	free_av.c
 SRC := $(addprefix $(SRC_DIR), $(SRC))
 
@@ -20,7 +20,7 @@ LIB := libft/libft.a
 BONUS := ./bin/pipex_bonus
 
 BONUS_SRC := arg_split.c	get_av.c		get_env_path.c	\
-			 main_bonus.c	pipex.c			open_files.c	\
+			 main_bonus.c	pipex.c			open_file.c	\
 			 error.c		exec_commands.c	heredoc_bonus.c	\
 			 free_av.c
 BONUS_SRC := $(addprefix $(SRC_DIR), $(BONUS_SRC))
