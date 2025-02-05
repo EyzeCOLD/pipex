@@ -32,13 +32,13 @@ char	**get_av(char *arg, t_pipex *px)
 		if (!full_path)
 		{
 			perror("pipex");
-			exit(1);
+			close_pipex(px, 0);
 		}
-		if (full_path < 0)
+		if (*full_path != '/')
 		{
 			err_cmd_not_found(*av);
 			free_av(&av);
-			close_pipex(px, 0);
+			close_pipex(px, 127);
 		}
 		free(*av);
 		*av = full_path;
@@ -51,6 +51,8 @@ static char	*search_env(char *cmd, t_pipex *px)
 	char	*full_path;
 	size_t	i;
 
+	if (*cmd == '\0')
+		return (ft_strdup(cmd));
 	i = 0;
 	while (px->env_path[i])
 	{
@@ -62,5 +64,5 @@ static char	*search_env(char *cmd, t_pipex *px)
 		free(full_path);
 		i++;
 	}
-	return ((char *) -1);
+	return (ft_strdup(cmd));
 }

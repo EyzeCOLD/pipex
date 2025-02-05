@@ -17,13 +17,14 @@
 static int	nothing_but_whitespace(char *arg);
 static char	*format_arg(char *arg);
 static char	*find_matching_quote(char *arg);
+static void	erase_char(char *s);
 
 char	**arg_split(char *arg)
 {
-	char	*argf;
+	char	*arg_formatted;
 	char	**av;
 
-	if (nothing_but_whitespace(arg))
+	if (!*arg || nothing_but_whitespace(arg))
 	{
 		av = ft_calloc(sizeof(char *), 2);
 		if (!av)
@@ -32,12 +33,12 @@ char	**arg_split(char *arg)
 		av[1] = NULL;
 		return (av);
 	}
-	argf = ft_strdup(arg);
-	if (!argf)
+	arg_formatted = ft_strdup(arg);
+	if (!arg_formatted)
 		return (NULL);
-	argf = format_arg(argf);
-	av = ft_split(argf, -1);
-	free(argf);
+	arg_formatted = format_arg(arg_formatted);
+	av = ft_split(arg_formatted, -1);
+	free(arg_formatted);
 	return (av);
 }
 
@@ -45,35 +46,40 @@ static int	nothing_but_whitespace(char *arg)
 {
 	while (*arg)
 	{
-		if (ft_isspace(*arg))
-			return (1);
+		if (!ft_isspace(*arg))
+			return (0);
 		arg++;
 	}
-	return (0);
+	return (1);
 }
 
-static char	*format_arg(char *argf)
+static char	*format_arg(char *arg_f)
 {
 	const char	*escapeable;
 	size_t		i;
 
 	escapeable = "\\ \'";
 	i = 0;
-	while (argf[i])
+	while (arg_f[i])
 	{
-		if (argf[i] == '\\' && ft_strchr(escapeable, argf[i + 1]))
-			ft_memmove(&argf[i], &argf[i + 1], ft_strlen(&argf[i]));
-		else if (argf[i] == '\'' && find_matching_quote(&argf[i]))
+		if (arg_f[i] == '\\' && ft_strchr(escapeable, arg_f[i + 1]))
+			erase_char(&(arg_f[i]));
+		else if (arg_f[i] == '\'' && find_matching_quote(&arg_f[i]))
 		{
-			ft_memmove(&argf[i], &argf[i + 1], ft_strlen(&argf[i]));
-			i += find_matching_quote(&argf[i]) - &argf[i];
-			ft_memmove(&argf[i], &argf[i + 1], ft_strlen(&argf[i]));
+			erase_char(&(arg_f[i]));
+			i += find_matching_quote(&arg_f[i]) - &arg_f[i];
+			erase_char(&(arg_f[i]));
 		}
-		else if (argf[i] == ' ')
-			argf[i] = -1;
+		else if (arg_f[i] == ' ')
+			arg_f[i] = -1;
 		i++;
 	}
-	return (argf);
+	return (arg_f);
+}
+
+static void	erase_char(char *s)
+{
+	ft_memmove(s, s + 1, ft_strlen(s));
 }
 
 static char	*find_matching_quote(char *arg)

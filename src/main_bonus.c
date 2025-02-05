@@ -72,14 +72,14 @@ static int	exec_commands(int argc, char **argv, t_pipex *px, int heredoc)
 
 static int	wait_for_children(pid_t last_pid, size_t children_left)
 {
-	pid_t	cpid;
-	int		wstatus;
 	int		exit_status;
+	int		wstatus;
+	pid_t	cpid;
 
 	exit_status = 0;
 	while (children_left)
 	{
-		cpid = waitpid(-1, &wstatus, 0);
+		cpid = wait(&wstatus);
 		if (cpid > 0)
 		{
 			if (cpid == last_pid && WIFEXITED(wstatus))

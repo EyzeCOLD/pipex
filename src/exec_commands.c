@@ -64,6 +64,7 @@ void	cmd_exec(char **av, t_pipex *px)
 {
 	close_all_fds(px);
 	execve(*av, av, px->envp);
+	err_with_filename(*av);
 	free_av(&av);
 	close_pipex(px, 0);
 }
