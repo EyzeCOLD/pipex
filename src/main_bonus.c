@@ -52,7 +52,7 @@ static int	exec_commands(int argc, char **argv, t_pipex *px, int heredoc)
 
 	cmd = 2 + heredoc;
 	if (heredoc)
-		heredoc_first_cmd(argv[2], argv[cmd++], px);
+		get_heredoc_input(argv[2], px);
 	else
 		first_cmd(argv[1], argv[cmd++], px);
 	roll_pipe(px, 0);
@@ -108,9 +108,5 @@ static void	mid_cmd(char *arg, t_pipex *px)
 		free_av(&av);
 		close_pipex(px, 0);
 	}
-	close_all_fds(px);
-	execve(*av, av, px->envp);
-	err_with_filename(*av);
-	free_av(&av);
-	close_pipex(px, 0);
+	cmd_exec(av, px);
 }

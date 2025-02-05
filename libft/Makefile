@@ -21,7 +21,7 @@ SRCS = 													\
 	ft_lstlast.c	ft_lstmap.c		ft_lstnew.c			\
 	ft_lstsize.c	ft_printf.c		ft_printf_utils.c	\
 	ft_atoi2.c		ft_math.c		get_next_line.c 	\
-	ft_strjoinm.c
+	ft_strjoinm.c	ft_isspace.c
 
 HEADERS = \
 	libft.h			ft_printf.h		get_next_line.h

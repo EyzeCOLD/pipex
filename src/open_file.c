@@ -1,21 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   heredoc_bonus.h                                    :+:      :+:    :+:   */
+/*   open_files.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: juaho <juaho@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/29 12:17:30 by juaho             #+#    #+#             */
-/*   Updated: 2025/02/04 14:46:42 by juaho            ###   ########.fr       */
+/*   Created: 2025/01/22 09:18:15 by juaho             #+#    #+#             */
+/*   Updated: 2025/01/28 11:17:48 by juaho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef HEREDOC_H
-# define HEREDOC_H
-# include "pipex.h"
+#include <fcntl.h>
+#include <unistd.h>
+#include "../inc/pipex.h"
 
-//////////////////////////////////////////////////////////// heredoc_bonus.c //
-void	get_heredoc_input(char *lim, t_pipex *px);
-pid_t	heredoc_last_cmd(char *outfile, char *arg, t_pipex *px);
-
-#endif
+void	open_file(char *file, t_pipex *px, int flags)
+{
+	px->fd = open(file, flags, 00644);
+	if (px->fd < 0)
+	{
+		err_with_filename(file);
+		close_pipex(px, 0);
+	}
+}

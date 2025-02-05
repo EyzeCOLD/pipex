@@ -19,6 +19,7 @@
 void	init_pipex(t_pipex *px, char **envp)
 {
 	fd_bzero(px);
+	px->env_path = NULL;
 	px->envp = envp;
 	if (*envp)
 	{
@@ -28,7 +29,6 @@ void	init_pipex(t_pipex *px, char **envp)
 			if (!px->env_path)
 				error_exit(px, "init_pipex");
 		}
-		px->pwd = get_env_line("PWD=", envp);
 	}
 	if (pipe(px->pipe_fd) < 0)
 		error_exit(px, "init_pipex");
@@ -36,8 +36,6 @@ void	init_pipex(t_pipex *px, char **envp)
 
 void	fd_bzero(t_pipex *px)
 {
-	px->env_path = NULL;
-	px->pwd = NULL;
 	px->pipe_fd[READ] = -1;
 	px->pipe_fd[WRITE] = -1;
 	px->fd = -1;
@@ -74,8 +72,6 @@ int	close_pipex(t_pipex *px, int exit_status)
 	int	close_err;
 
 	error = errno;
-	if (access(".tmp", F_OK) == 0)
-		unlink(".tmp");
 	if (px->env_path)
 		free_av(&(px->env_path));
 	close_err = close_all_fds(px);

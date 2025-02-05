@@ -6,11 +6,12 @@
 /*   By: juaho <juaho@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 15:38:11 by juaho             #+#    #+#             */
-/*   Updated: 2024/12/26 13:30:27 by juaho            ###   ########.fr       */
+/*   Updated: 2025/02/05 16:00:54 by juaho            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <limits.h>
+#include "libft.h"
 
 static	int	atoi2_inner(const char *a, int *i, int neg)
 {
@@ -39,7 +40,7 @@ int	ft_atoi2(const char *a, int *i)
 	int		neg;
 
 	neg = 0;
-	while ((*a >= 9 && *a <= 13) || *a == ' ')
+	while (ft_isspace(*a))
 		a++;
 	if (*a == '-' || *a == '+')
 	{
