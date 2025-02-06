@@ -27,13 +27,21 @@ BONUS_SRC := $(addprefix $(SRC_DIR), $(BONUS_SRC))
 
 BONUS_OBJ := $(patsubst $(SRC_DIR)%.c, $(OBJ_DIR)%.o, $(BONUS_SRC))
 
-BONUS_INC := ./inc/heredoc_bonus.h
+BONUS_INC := $(INC) ./inc/heredoc_bonus.h
+
+#  DEBUG
+
+DEBUG := ./debug/pipex
+
+DEBUG_BONUS := ./debug/pipex_bonus
 
 #####  COMPILERS  ##############################################################
 
 CC := cc
 
 CFLAGS := -Wall -Wextra -Werror
+
+DEBUG_FLAGS := -g
 
 #####  RULES  ##################################################################
 
@@ -43,7 +51,7 @@ $(NAME): $(LIB) $(OBJ_DIR) $(OBJ) $(INC)
 	@mkdir -p bin
 	$(CC) $(CFLAGS) $(OBJ) $(LIB) -o $@
 
-$(LIB): phony
+$(LIB):
 	@(cd libft && make CFLAGS="$(CFLAGS)")
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.c
@@ -60,13 +68,11 @@ $(BONUS): $(LIB) $(OBJ_DIR) $(BONUS_OBJ) $(BONUS_INC)
 	$(CC) $(CFLAGS) $(BONUS_OBJ) $(LIB) -o $@
 
 clean:
-	@rm -rf $(OBJ_DIR) .bonus
-	@(cd libft && make clean)
+	rm -rf $(OBJ_DIR) ./debug/ .bonus
 
 fclean: clean
 	@rm -rf $(NAME) $(BONUS)
 	@rm -rf bin
-	@(cd libft && make fclean)
 
 re: fclean all
 
@@ -74,10 +80,20 @@ reb: fclean bonus
 
 #  DEBUG
 
-debug: CFLAGS := $(CFLAGS) -g
-debug: all
+debug: CFLAGS := $(CFLAGS) $(DEBUG_FLAGS)
+debug: clean $(DEBUG)
 
-debugb: CFLAGS := $(CFLAGS) -g
-debugb: bonus
+$(DEBUG): $(LIB) $(OBJ_DIR) $(OBJ) $(INC)
+	@mkdir -p debug
+	$(CC) $(CFLAGS) $(OBJ) $(LIB) -o $@
+	@make clean
+
+debugb: CFLAGS := $(CFLAGS) $(DEBUG_FLAGS)
+debugb: clean $(DEBUG_BONUS)
+
+$(DEBUG_BONUS): $(LIB) $(OBJ_DIR) $(BONUS_OBJ) $(BONUS_INC)
+	@mkdir -p debug
+	$(CC) $(CFLAGS) $(BONUS_OBJ) $(LIB) -o $@
+	@make clean
 
 .PHONY: all clean fclean phony bonus re reb debug debugb

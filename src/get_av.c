@@ -38,6 +38,7 @@ char	**get_av(char *arg, t_pipex *px)
 		{
 			err_cmd_not_found(*av);
 			free_av(&av);
+			free(full_path);
 			close_pipex(px, 127);
 		}
 		free(*av);
