@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef HEREDOC_H
-# define HEREDOC_H
+#ifndef HEREDOC_BONUS_H
+# define HEREDOC_BONUS_H
 # include "pipex.h"
 
 //////////////////////////////////////////////////////////// heredoc_bonus.c //
