@@ -68,11 +68,13 @@ $(BONUS): $(LIB) $(OBJ_DIR) $(BONUS_OBJ) $(BONUS_INC)
 	$(CC) $(CFLAGS) $(BONUS_OBJ) $(LIB) -o $@
 
 clean:
-	rm -rf $(OBJ_DIR) ./debug/ .bonus
+	@rm -rf $(OBJ_DIR) ./debug/ .bonus
+	@(cd libft && make clean)
 
 fclean: clean
 	@rm -rf $(NAME) $(BONUS)
 	@rm -rf bin
+	@(cd libft && make fclean)
 
 re: fclean all
 
@@ -81,19 +83,17 @@ reb: fclean bonus
 #  DEBUG
 
 debug: CFLAGS := $(CFLAGS) $(DEBUG_FLAGS)
-debug: clean $(DEBUG)
+debug: $(DEBUG)
 
 $(DEBUG): $(LIB) $(OBJ_DIR) $(OBJ) $(INC)
 	@mkdir -p debug
 	$(CC) $(CFLAGS) $(OBJ) $(LIB) -o $@
-	@make clean
 
 debugb: CFLAGS := $(CFLAGS) $(DEBUG_FLAGS)
-debugb: clean $(DEBUG_BONUS)
+debugb: $(DEBUG_BONUS)
 
 $(DEBUG_BONUS): $(LIB) $(OBJ_DIR) $(BONUS_OBJ) $(BONUS_INC)
 	@mkdir -p debug
 	$(CC) $(CFLAGS) $(BONUS_OBJ) $(LIB) -o $@
-	@make clean
 
 .PHONY: all clean fclean phony bonus re reb debug debugb
