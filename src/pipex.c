@@ -16,12 +16,14 @@
 #include <errno.h>
 #include "../inc/pipex.h"
 
+static void	fd_bzero(t_pipex *px);
+
 void	init_pipex(t_pipex *px, char **envp)
 {
 	fd_bzero(px);
 	px->env_path = NULL;
 	px->envp = envp;
-	if (*envp)
+	if (envp && *envp)
 	{
 		if (get_env_line("PATH=", envp))
 		{
@@ -34,7 +36,7 @@ void	init_pipex(t_pipex *px, char **envp)
 		error_exit(px, "init_pipex");
 }
 
-void	fd_bzero(t_pipex *px)
+static inline void	fd_bzero(t_pipex *px)
 {
 	px->pipe_fd[READ] = -1;
 	px->pipe_fd[WRITE] = -1;
@@ -59,10 +61,7 @@ int	close_all_fds(t_pipex *px)
 	if (px->prev_pipe_fd != -1)
 		if (close(px->prev_pipe_fd) < 0)
 			error = -4;
-	px->fd = -1;
-	px->pipe_fd[READ] = -1;
-	px->pipe_fd[WRITE] = -1;
-	px->prev_pipe_fd = -1;
+	fd_bzero(px);
 	return (error);
 }
 
@@ -80,9 +79,15 @@ int	close_pipex(t_pipex *px, int exit_status)
 		perror("close_pipex");
 		exit(error);
 	}
-	if (exit_status)
-		exit(exit_status);
-	exit(error);
+	if (exit_status == 0)
+	{
+		if (error == 2)
+			error = 127;
+		else if (error == 13)
+			error = 126;
+		exit(error);
+	}
+	exit(exit_status);
 }
 
 void	roll_pipe(t_pipex *px, int last)

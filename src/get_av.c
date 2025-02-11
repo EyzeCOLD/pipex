@@ -52,7 +52,7 @@ static char	*search_env(char *cmd, t_pipex *px)
 	char	*full_path;
 	size_t	i;
 
-	if (*cmd == '\0')
+	if (*cmd == '\0' || !px->env_path)
 		return (ft_strdup(cmd));
 	i = 0;
 	while (px->env_path[i])

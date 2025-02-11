@@ -85,15 +85,17 @@ reb: fclean bonus
 debug: CFLAGS := $(CFLAGS) $(DEBUG_FLAGS)
 debug: $(DEBUG)
 
-$(DEBUG): $(LIB) $(OBJ_DIR) $(OBJ) $(INC)
+$(DEBUG): clean $(LIB) $(OBJ_DIR) $(OBJ) $(INC)
 	@mkdir -p debug
 	$(CC) $(CFLAGS) $(OBJ) $(LIB) -o $@
+	@make clean
 
 debugb: CFLAGS := $(CFLAGS) $(DEBUG_FLAGS)
 debugb: $(DEBUG_BONUS)
 
-$(DEBUG_BONUS): $(LIB) $(OBJ_DIR) $(BONUS_OBJ) $(BONUS_INC)
+$(DEBUG_BONUS): clean $(LIB) $(OBJ_DIR) $(BONUS_OBJ) $(BONUS_INC)
 	@mkdir -p debug
 	$(CC) $(CFLAGS) $(BONUS_OBJ) $(LIB) -o $@
+	@make clean
 
 .PHONY: all clean fclean phony bonus re reb debug debugb

@@ -26,8 +26,10 @@ void	get_heredoc_input(char *lim, t_pipex *px)
 	{
 		ft_putstr_fd("pipex heredoc> ", 1);
 		line = get_next_line(STDIN_FILENO);
-		if (!line)
+		if (line == (char *) -1)
 			error_exit(px, NULL);
+		if (line == NULL)
+			break ;
 		if (ft_strncmp(line, lim, lim_len) == 0 && line[lim_len] == '\n')
 			break ;
 		if (ft_putstr_fd(line, px->pipe_fd[1]) < 0)

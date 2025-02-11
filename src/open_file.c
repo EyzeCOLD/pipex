@@ -20,6 +20,6 @@ void	open_file(char *file, t_pipex *px, int flags)
 	if (px->fd < 0)
 	{
 		err_with_filename(file);
-		close_pipex(px, 0);
+		close_pipex(px, 1);
 	}
 }

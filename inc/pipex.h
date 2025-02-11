@@ -27,7 +27,6 @@ typedef struct s_pipex
 
 //////////////////////////////////////////////////////////////////// pipex.c //
 void	init_pipex(t_pipex *px, char **envp);
-void	fd_bzero(t_pipex *px);
 int		close_all_fds(t_pipex *px);
 int		close_pipex(t_pipex *px, int exit_status);
 void	roll_pipe(t_pipex *px, int last);
